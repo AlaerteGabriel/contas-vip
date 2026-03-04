@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm" style="background: linear-gradient(90deg, #0d6efd, #0dcaf0);">
     <div class="container">
-        <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ route('carteira.acc.index') ?? '#' }}">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ route('dashboard.index') ?? '#' }}">
             <i class="bi bi-wallet2 fs-3 me-2"></i> FinDash
         </a>
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText">

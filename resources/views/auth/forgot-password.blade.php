@@ -15,7 +15,7 @@
 
         <x-alert />
 
-        <form action="{{ route('carteira.password.email') ?? '#' }}" method="POST">
+        <form action="{{ route('admin.password.email') ?? '#' }}" method="POST">
             @csrf
             @honeypot
             <div class="mb-4">
@@ -32,7 +32,7 @@
         </form>
 
         <div class="text-center mt-4 pt-3 border-top">
-            <p class="mb-0 text-muted">Lembrou sua senha? <a href="{{ route('carteira.login') ?? '#' }}" class="text-decoration-none fw-semibold text-warning">Voltar ao login</a></p>
+            <p class="mb-0 text-muted">Lembrou sua senha? <a href="{{ route('admin.login') ?? '#' }}" class="text-decoration-none fw-semibold text-warning">Voltar ao login</a></p>
         </div>
     </div>
 </div>

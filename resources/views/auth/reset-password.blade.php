@@ -13,7 +13,7 @@
             <p class="text-muted">Crie uma nova senha para sua conta</p>
         </div>
 
-        <form action="{{ route('carteira.password.store') ?? '#' }}" method="POST">
+        <form action="{{ route('admin.password.store') ?? '#' }}" method="POST">
             @csrf
 
             <input type="hidden" name="token" value="{{ $tokenPass }}">
