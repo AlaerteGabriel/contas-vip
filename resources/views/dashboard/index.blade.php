@@ -1,208 +1,216 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard - Carteira Financeira')
-
-<script>
-    function confirmarEstorno(id) {
-        if (confirm('Deseja realmente estornar esta transação? O valor será devolvido ao pagador e esta operação não pode ser desfeita.')) {
-            document.getElementById('form-estorno-' + id).submit();
-        }
-    }
-</script>
+@section('title', 'Dashboard - Sistema Contas VIP')
+@section('header_title', 'Dashboard')
+@section('header_subtitle', 'Bem-vindo de volta, Admin!')
 
 @section('content')
-<!-- Balance & Summary -->
-<div class="row g-4 mb-4">
-    <div class="col-md-8">
-        <div class="card border-0 shadow-sm rounded-4 gradient-card text-white h-100 overflow-hidden position-relative">
-            <!-- Background shapes -->
-            <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 150px; height: 150px; top: -50px; right: -20px;"></div>
-            <div class="position-absolute rounded-circle bg-white opacity-10" style="width: 100px; height: 100px; bottom: -30px; right: 80px;"></div>
-
-            <div class="card-body p-4 d-flex flex-column justify-content-between position-relative z-1">
+<div class="row">
+    <!-- Stat Card 1 -->
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card stat-card h-100 bg-primary text-white" style="background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);">
+            <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <p class="mb-1 opacity-75 fw-medium">Saldo Disponível</p>
-                        <h1 class="display-5 fw-bold mb-0">R$ {{ number_format($user->us_balanco, 2, ',', '.') }}</h1>
+                        <p class="mb-1 text-white-50 fw-semibold text-uppercase small">Total Clientes</p>
+                        <h2 class="mb-0 fw-bold">2,451</h2>
                     </div>
-                    <div class="bg-white bg-opacity-25 p-2 rounded-3">
-                        <i class="bi bi-wallet2 fs-3"></i>
+                    <div class="icon-box">
+                        <i class="fa-solid fa-users"></i>
                     </div>
                 </div>
-                <div class="mt-4 pt-3 border-top border-light border-opacity-25 d-flex gap-4">
-                    <div>
-                        <p class="small mb-0 opacity-75">Agência</p>
-                        <p class="fw-semibold mb-0">0001</p>
-                    </div>
-                    <div>
-                        <p class="small mb-0 opacity-75">Conta</p>
-                        <p class="fw-semibold mb-0">{{ rand(1000, 1999).'-'.$user->us_id }}</p>
-                    </div>
+                <div class="mt-3">
+                    <span class="badge bg-white text-primary rounded-pill">+12%</span>
+                    <span class="small text-white-50 ms-2">desde o último mês</span>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Quick Stats -->
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4 d-flex flex-column justify-content-center gap-3">
-                <div class="d-flex align-items-center">
-                    <div class="icon-box bg-success bg-opacity-10 text-success me-3">
-                        <i class="bi bi-arrow-up-right fs-4"></i>
-                    </div>
+
+    <!-- Stat Card 2 -->
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card stat-card h-100 text-white" style="background: linear-gradient(135deg, #4cc9f0 0%, #4895ef 100%);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <p class="text-muted small mb-0">Entradas (Mês)</p>
-                        <h5 class="fw-bold mb-0">+ R$ {{ number_format($summary['entradas'], 2, ',', '.') }}</h5>
+                        <p class="mb-1 text-white-50 fw-semibold text-uppercase small">Serviços Ativos</p>
+                        <h2 class="mb-0 fw-bold">842</h2>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fa-solid fa-box-open"></i>
                     </div>
                 </div>
-                <div class="d-flex align-items-center">
-                    <div class="icon-box bg-danger bg-opacity-10 text-danger me-3">
-                        <i class="bi bi-arrow-down-left fs-4"></i>
-                    </div>
+                <div class="mt-3">
+                    <span class="badge bg-white text-info rounded-pill">+5%</span>
+                    <span class="small text-white-50 ms-2">desde o último mês</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat Card 3 -->
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card stat-card h-100 text-white" style="background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <p class="text-muted small mb-0">Saídas (Mês)</p>
-                        <h5 class="fw-bold mb-0">- R$ {{ number_format($summary['saidas'], 2, ',', '.') }}</h5>
+                        <p class="mb-1 text-white-50 fw-semibold text-uppercase small">Faturas Pendentes</p>
+                        <h2 class="mb-0 fw-bold">124</h2>
                     </div>
+                    <div class="icon-box">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <span class="badge bg-white text-danger rounded-pill">-2%</span>
+                    <span class="small text-white-50 ms-2">desde o último mês</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat Card 4 -->
+    <div class="col-xl-3 col-sm-6 mb-4">
+        <div class="card stat-card h-100 text-white" style="background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <p class="mb-1 text-white-50 fw-semibold text-uppercase small">Receita Mensal</p>
+                        <h2 class="mb-0 fw-bold">R$ 45k</h2>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fa-solid fa-brazilian-real-sign"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <span class="badge bg-white text-success rounded-pill">+18%</span>
+                    <span class="small text-white-50 ms-2">desde o último mês</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Quick Actions Mobile (Visible mainly on mobile/tablet) -->
-<div class="row g-3 mb-4 d-lg-none">
-    <div class="col-4">
-        <div class="card border-0 shadow-sm text-center h-100 p-2 action-btn" role="button" data-bs-toggle="modal" data-bs-target="#depositModal">
-            <div class="card-body p-2">
-                <i class="bi bi-box-arrow-in-down fs-3 text-success mb-2 d-inline-block"></i>
-                <p class="mb-0 fw-medium small">Depositar</p>
+<div class="row">
+    <!-- Ultimos Clientes -->
+    <div class="col-lg-8 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Últimos Clientes Registrados</h5>
+                <a href="{{ route('clientes.index') }}" class="btn btn-sm btn-light border">Ver Todos</a>
             </div>
-        </div>
-    </div>
-    <div class="col-4">
-        <div class="card border-0 shadow-sm text-center h-100 p-2 action-btn" role="button" data-bs-toggle="modal" data-bs-target="#transferModal">
-            <div class="card-body p-2">
-                <i class="bi bi-send fs-3 text-primary mb-2 d-inline-block"></i>
-                <p class="mb-0 fw-medium small">Transferir</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-4">
-        <div class="card border-0 shadow-sm text-center h-100 p-2 action-btn" role="button" data-bs-toggle="modal" data-bs-target="#receiveModal">
-            <div class="card-body p-2">
-                <i class="bi bi-qr-code fs-3 text-dark mb-2 d-inline-block"></i>
-                <p class="mb-0 fw-medium small">Receber</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Desktop Action Buttons -->
-<div class="d-none d-lg-flex gap-3 mb-4">
-    <button class="btn btn-success rounded-pill px-4 py-2 shadow-sm d-flex align-items-center fw-medium" data-bs-toggle="modal" data-bs-target="#depositModal">
-        <i class="bi bi-plus-circle me-2"></i> Depositar
-    </button>
-    <button class="btn btn-primary rounded-pill px-4 py-2 shadow-sm d-flex align-items-center fw-medium" data-bs-toggle="modal" data-bs-target="#transferModal">
-        <i class="bi bi-send me-2"></i> Transferir Dinheiro
-    </button>
-    <button class="btn btn-dark rounded-pill px-4 py-2 shadow-sm d-flex align-items-center fw-medium" data-bs-toggle="modal" data-bs-target="#receiveModal">
-        <i class="bi bi-qr-code me-2"></i> Receber PIX
-    </button>
-</div>
-
-<!-- Recent Transactions -->
-<div class="card border-0 shadow-sm rounded-4">
-    <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
-        <h5 class="fw-bold mb-0">Extrato Recente</h5>
-        <a href="#" class="text-decoration-none text-primary small fw-semibold">Ver todos</a>
-    </div>
-    <div class="card-body px-4 pt-3 pb-4">
-        <div class="table-responsive">
-            <table class="table table-borderless align-middle mb-0">
-                <tbody>
-                    @foreach($transacoes AS $tr)
-                        @php
-                            // 1. Identifica se a transação FOI estornada ou se ela É um estorno
-                            $isReversed = $tr->tr_estornado; // A original marcada como estornada
-                            $isAReversal = !is_null($tr->tr_estorno_id); // O lançamento da devolução
-
-                            // Lógica de Entrada ou Saída
-                            $isIncome = ($tr->tr_tipo === 'deposito') || ($tr->tr_beneficiario_id === auth()->id());
-
-                            // Cores e Ícones base
-                            $colorClass = $isIncome ? 'success' : 'dark';
-                            $icon = $isIncome ? 'bi-arrow-down-left' : 'bi-arrow-up-right';
-                            $prefix = $isIncome ? '+' : '-';
-
-                            // Título e Descrição
-                            if ($tr->tr_tipo === 'deposito') {
-                                $title = 'Depósito';
-                                $description = $tr->tr_descricao ?? 'Adição de saldo';
-                                $icon = 'bi-cash-stack';
-                            } elseif ($tr->tr_tipo === 'transferencia') {
-                                if ($isIncome) {
-                                    $title = $isAReversal ? 'Estorno Recebido' : 'Transferência Recebida';
-                                    $description = "De: " . ($tr->pagador->us_nome ?? 'Usuário Externo');
-                                } else {
-                                    $title = $isAReversal ? 'Estorno Enviado' : 'Transferência Enviada';
-                                    $description = "Para: " . ($tr->beneficiario->us_nome ?? 'Desconhecido');
-                                    $colorClass = 'primary';
-                                }
-                            }
-
-                            // Ajustes visuais para itens estornados
-                            if ($isReversed) {
-                                $colorClass = 'secondary';
-                                $icon = 'bi-x-circle';
-                            }
-                        @endphp
-
-                        <tr class="transaction-row border-bottom border-light {{ $isReversed ? 'opacity-50' : '' }}">
-                            <td class="py-3 px-0">
-                                <div class="d-flex align-items-center">
-                                    <div class="icon-box bg-{{ $colorClass }} bg-opacity-10 text-{{ $colorClass }} me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-                                        <i class="bi {{ $icon }} fs-5"></i>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Cliente</th>
+                                <th>Status</th>
+                                <th>Plano/Serviço</th>
+                                <th>Data Cadastro</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded-circle p-2 me-3 text-primary fw-bold" style="width: 40px; height: 40px; text-align: center;">JA</div>
+                                        <div>
+                                            <h6 class="mb-0 fw-semibold">João Almeida</h6>
+                                            <small class="text-muted">joao.almeida@email.com</small>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h6 class="mb-1 fw-semibold">
-                                            {{ $title }}
-                                            @if($isReversed) <span class="badge bg-light text-secondary ms-1 small" style="font-size: 0.7rem;">CANCELADA</span> @endif
-                                            @if($isAReversal) <span class="badge bg-info bg-opacity-10 text-info ms-1 small" style="font-size: 0.7rem;">ESTORNO</span> @endif
-                                        </h6>
-                                        <p class="text-muted small mb-0">{{ $description }}</p>
+                                </td>
+                                <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3">Ativo</span></td>
+                                <td>Hospedagem VIP</td>
+                                <td class="text-muted small">04 Mar, 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded-circle p-2 me-3 text-primary fw-bold" style="width: 40px; height: 40px; text-align: center;">MC</div>
+                                        <div>
+                                            <h6 class="mb-0 fw-semibold">Maria Costa</h6>
+                                            <small class="text-muted">maria.costa@email.com</small>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="text-end py-3 px-0">
-                                <h6 class="text-{{ $isIncome ? 'success' : 'dark' }} fw-bold mb-1 {{ $isReversed ? 'text-decoration-line-through' : '' }}">
-                                    {{ $prefix }} R$ {{ number_format($tr->tr_valor, 2, ',', '.') }}
-                                </h6>
-                                <span class="badge bg-light text-secondary">
-                                    {{ $tr->created_at->calendar() }}
-                                </span>
+                                </td>
+                                <td><span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 rounded-pill px-3">Pendente</span></td>
+                                <td>Suporte Técnico</td>
+                                <td class="text-muted small">03 Mar, 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded-circle p-2 me-3 text-primary fw-bold" style="width: 40px; height: 40px; text-align: center;">RS</div>
+                                        <div>
+                                            <h6 class="mb-0 fw-semibold">Roberto Silva</h6>
+                                            <small class="text-muted">roberto@empresa.com</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3">Ativo</span></td>
+                                <td>Servidor Dedicado</td>
+                                <td class="text-muted small">01 Mar, 2026</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded-circle p-2 me-3 text-primary fw-bold" style="width: 40px; height: 40px; text-align: center;">AL</div>
+                                        <div>
+                                            <h6 class="mb-0 fw-semibold">Amanda Lima</h6>
+                                            <small class="text-muted">amanda@email.com</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill px-3">Inativo</span></td>
+                                <td>Hospedagem Padrão</td>
+                                <td class="text-muted small">28 Fev, 2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                {{-- Botão de Estorno --}}
-                                @if(!$isReversed && !$isAReversal && $tr->tr_tipo !== 'deposito' && $tr->tr_us_id === auth()->id())
-                                    <button type="button"
-                                            onclick="confirmarEstorno({{ $tr->tr_id }})"
-                                            class="btn btn-sm btn-outline-danger border-0 p-0 shadow-none"
-                                            title="Estornar esta transação">
-                                        <i class="bi bi-arrow-counterclockwise fs-6"></i>
-                                    </button>
-                                @endif
-
-                                {{-- Formulário Único Oculto (Fora do loop para performance, ou um para cada se preferir) --}}
-                                <form id="form-estorno-{{ $tr->tr_id }}" action="{{ route('carteira.transacoes.estorno', $tr->tr_id) }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-            <div class="mt-4">
-                {{ $transacoes->links() }}
+    <!-- Avisos -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Atividades Recentes</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex mb-4">
+                    <div class="mt-1">
+                        <i class="fa-solid fa-circle text-primary" style="font-size: 0.6rem;"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-1 fw-semibold">Backup Realizado</h6>
+                        <p class="mb-0 text-muted small">Backup completo do banco de dados concluído com sucesso.</p>
+                        <small class="text-muted" style="font-size: 0.7rem;">Hoje, 02:00 AM</small>
+                    </div>
+                </div>
+                <div class="d-flex mb-4">
+                    <div class="mt-1">
+                        <i class="fa-solid fa-circle text-success" style="font-size: 0.6rem;"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-1 fw-semibold">Novo Pagamento</h6>
+                        <p class="mb-0 text-muted small">Fatura #834 de R$ 150,00 foi paga por Cliente XYZ.</p>
+                        <small class="text-muted" style="font-size: 0.7rem;">Ontem, 16:30 PM</small>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="mt-1">
+                        <i class="fa-solid fa-circle text-warning" style="font-size: 0.6rem;"></i>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-1 fw-semibold">Alerta de Espaço</h6>
+                        <p class="mb-0 text-muted small">Servidor 01 atingiu 85% da capacidade de armazenamento.</p>
+                        <small class="text-muted" style="font-size: 0.7rem;">Ontem, 09:15 AM</small>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

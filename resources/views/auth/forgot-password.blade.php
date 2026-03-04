@@ -1,39 +1,88 @@
-@extends('layouts.auth')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-@section('title', 'Recuperar Senha - Carteira Financeira')
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha - Contas VIP</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+</head>
 
-@section('content')
-<div class="auth-container card border-0 shadow-lg rounded-4">
-    <div class="card-body p-5">
-        <div class="text-center mb-4">
-            <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                <i class="bi bi-shield-lock" style="font-size: 2.5rem;"></i>
-            </div>
-            <h4 class="fw-bold">Recuperar Senha</h4>
-            <p class="text-muted">Informe seu e-mail para receber um link de redefinição de senha</p>
+<body>
+    <div class="auth-wrapper position-relative overflow-hidden">
+        <!-- Abstract Shapes Background -->
+        <div class="position-absolute top-0 end-0 translate-middle"
+            style="width: 400px; height: 400px; background: rgba(76, 201, 240, 0.1); border-radius: 50%; filter: blur(40px);">
+        </div>
+        <div class="position-absolute bottom-0 start-0 translate-middle"
+            style="width: 300px; height: 300px; background: rgba(67, 97, 238, 0.15); border-radius: 50%; filter: blur(50px);">
         </div>
 
-        <x-alert />
-
-        <form action="{{ route('admin.password.email') ?? '#' }}" method="POST">
-            @csrf
-            @honeypot
-            <div class="mb-4">
-                <label for="email" class="form-label fw-medium">E-mail Cadastrado</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
-                    <input type="email" class="form-control bg-light border-start-0 ps-0" name="email" id="email" value="{{ old('email') }}" required placeholder="seu@email.com" autofocus>
+        <div class="card auth-card position-relative z-1">
+            <div class="auth-header pb-2">
+                <div class="mb-4 d-inline-flex align-items-center justify-content-center bg-info bg-opacity-10 text-info rounded-circle"
+                    style="width: 70px; height: 70px; font-size: 2rem;">
+                    <i class="fa-solid fa-key"></i>
                 </div>
+                <h3>Recuperar Senha</h3>
+                <p class="text-muted fw-medium px-4">Informe o e-mail cadastrado para receber as instruções de
+                    recuperação de acesso.</p>
             </div>
+            <div class="auth-body">
+                @if (session('status'))
+                    <div class="alert alert-success mt-2 mb-4 rounded-3 border-success border-opacity-25 small p-3 text-center">
+                        <i class="fa-solid fa-circle-check text-success fs-4 mb-2 d-block"></i>
+                        {{ session('status') }}
+                    </div>
+                @endif
+                
+                @if ($errors->any())
+                    <div class="alert alert-danger mt-2 mb-4 rounded-3 border-danger border-opacity-25 small p-3">
+                        <ul class="mb-0 ps-3">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-warning py-2 fw-medium rounded-pill text-dark border-0" style="background: linear-gradient(135deg, #ffc107, #ffca2c);">Enviar Link de Recuperação</button>
+                <form class="auth-form" method="POST" action="{{ route('password.email') }}">
+                    @csrf
+                    <div id="formContent">
+                        <div class="mb-4">
+                            <label for="email" class="form-label text-dark small">E-mail Cadastrado</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text"><i
+                                        class="fa-solid fa-envelope text-info opacity-50"></i></span>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="seu@email.com.br"
+                                    required autocomplete="email" autofocus value="{{ old('email') }}">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-info text-white btn-lg w-100 mb-4 shadow"><i
+                                class="fa-regular fa-paper-plane ms-1 me-2"></i> Enviar Instruções </button>
+                    </div>
+
+                    <div class="text-center mt-3 pt-3 border-top border-opacity-10 border-dark">
+                        <a href="{{ route('login') }}"
+                            class="text-decoration-none text-muted fw-bold d-inline-flex align-items-center">
+                            <div class="bg-light rounded-circle p-2 me-2 d-flex align-items-center justify-content-center"
+                                style="width: 30px; height: 30px;"><i class="fa-solid fa-arrow-left small"></i></div>
+                            Voltar para o Login
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
-
-        <div class="text-center mt-4 pt-3 border-top">
-            <p class="mb-0 text-muted">Lembrou sua senha? <a href="{{ route('admin.login') ?? '#' }}" class="text-decoration-none fw-semibold text-warning">Voltar ao login</a></p>
         </div>
     </div>
-</div>
-@endsection
+</body>
+
+</html>
