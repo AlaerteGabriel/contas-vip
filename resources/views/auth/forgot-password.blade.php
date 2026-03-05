@@ -43,7 +43,7 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                
+
                 @if ($errors->any())
                     <div class="alert alert-danger mt-2 mb-4 rounded-3 border-danger border-opacity-25 small p-3">
                         <ul class="mb-0 ps-3">
@@ -54,28 +54,25 @@
                     </div>
                 @endif
 
-                <form class="auth-form" method="POST" action="{{ route('password.email') }}">
+                <form class="auth-form" method="POST" action="{{ route('admin.password.email') }}">
                     @csrf
+                    @honeypot
                     <div id="formContent">
                         <div class="mb-4">
                             <label for="email" class="form-label text-dark small">E-mail Cadastrado</label>
                             <div class="input-group input-group-lg">
-                                <span class="input-group-text"><i
-                                        class="fa-solid fa-envelope text-info opacity-50"></i></span>
-                                <input type="email" class="form-control" name="email" id="email" placeholder="seu@email.com.br"
-                                    required autocomplete="email" autofocus value="{{ old('email') }}">
+                                <span class="input-group-text"><i class="fa-solid fa-envelope text-info opacity-50"></i></span>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="seu@email.com.br" required autocomplete="email" autofocus value="{{ old('email') }}">
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-info text-white btn-lg w-100 mb-4 shadow"><i
-                                class="fa-regular fa-paper-plane ms-1 me-2"></i> Enviar Instruções </button>
+                        <button type="submit" class="btn btn-info text-white btn-lg w-100 mb-4 shadow"><i class="fa-regular fa-paper-plane ms-1 me-2"></i> Enviar Instruções </button>
                     </div>
 
                     <div class="text-center mt-3 pt-3 border-top border-opacity-10 border-dark">
-                        <a href="{{ route('login') }}"
+                        <a href="{{ route('admin.login') }}"
                             class="text-decoration-none text-muted fw-bold d-inline-flex align-items-center">
-                            <div class="bg-light rounded-circle p-2 me-2 d-flex align-items-center justify-content-center"
-                                style="width: 30px; height: 30px;"><i class="fa-solid fa-arrow-left small"></i></div>
+                            <div class="bg-light rounded-circle p-2 me-2 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;"><i class="fa-solid fa-arrow-left small"></i></div>
                             Voltar para o Login
                         </a>
                     </div>

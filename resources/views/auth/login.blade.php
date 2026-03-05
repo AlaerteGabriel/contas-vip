@@ -32,7 +32,7 @@
             </div>
             <div class="auth-body">
                 <!-- Laravel Login Form -->
-                <form class="auth-form" method="POST" action="{{ route('admin.login') }}">
+                <form class="auth-form" method="POST" action="{{ route('admin.login.logar') }}">
                     @csrf
 
                     @if ($errors->any())
@@ -48,9 +48,8 @@
                     <div class="mb-4">
                         <label for="email" class="form-label text-dark small">E-mail de Acesso</label>
                         <div class="input-group input-group-lg">
-                            <span class="input-group-text"><i
-                                    class="fa-solid fa-envelope text-primary opacity-50"></i></span>
-                            <input type="email" class="form-control" name="email" id="email" placeholder="seuemail@login.com" required autocomplete="email" autofocus value="{{ old('email') }}">
+                            <span class="input-group-text"><i class="fa-solid fa-envelope text-primary opacity-50"></i></span>
+                            <input type="email" class="form-control" name="login" id="email" placeholder="seuemail@login.com" required autocomplete="email" autofocus value="{{ old('email') }}">
                         </div>
                     </div>
 
@@ -58,14 +57,13 @@
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <label for="password" class="form-label text-dark small mb-0">Senha</label>
                             @if (Route::has('admin.password.request'))
-                                <a href="{{ route('admin.password.request') }}" class="text-decoration-none small text-primary fw-bold"
-                                    style="font-size: 0.8rem;">Esqueceu a senha?</a>
+                                <a href="{{ route('admin.password.request') }}" class="text-decoration-none small text-primary fw-bold" style="font-size: 0.8rem;">Esqueceu a senha?</a>
                             @endif
                         </div>
                         <div class="input-group input-group-lg">
                             <span class="input-group-text"><i
                                     class="fa-solid fa-lock text-primary opacity-50"></i></span>
-                            <input type="password" class="form-control border-end-0" name="password" id="password" placeholder="senha" required autocomplete="current-password">
+                            <input type="password" class="form-control border-end-0" name="pass" id="password" placeholder="senha" required autocomplete="current-password">
                             <button class="btn btn-outline-light border border-start-0 text-muted bg-light" type="button" id="togglePassword">
                                 <i class="fa-solid fa-eye"></i>
                             </button>
@@ -73,7 +71,7 @@
                     </div>
 
                     <div class="form-check mb-4">
-                        <input class="form-check-input border-primary border-opacity-50" type="checkbox" name="remember" id="rememberMe" {{ old('remember') ? 'checked' : '' }}>
+                        <input class="form-check-input border-primary border-opacity-50" value="1" type="checkbox" name="remember" id="rememberMe" {{ old('remember') ? 'checked' : '' }}>
                         <label class="form-check-label text-muted small" for="rememberMe">
                             Manter conectado
                         </label>
@@ -88,7 +86,6 @@
             </div>
         </div>
     </div>
-
     <script>
         document.getElementById('togglePassword').addEventListener('click', function () {
             var passwordInput = document.getElementById('password');

@@ -97,7 +97,7 @@
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Últimos Clientes Registrados</h5>
-                <a href="{{ route('clientes.index') }}" class="btn btn-sm btn-light border">Ver Todos</a>
+                <a href="{{ route('dashboard.clientes.index') }}" class="btn btn-sm btn-light border">Ver Todos</a>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">

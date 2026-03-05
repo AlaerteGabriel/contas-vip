@@ -46,31 +46,32 @@
                     </div>
                 @endif
 
-                <form class="auth-form" method="POST" action="{{ route('password.store') }}">
+                <form class="auth-form" method="POST" action="{{ route('admin.password.store') }}">
                     @csrf
-                    
+
                     <!-- Password Reset Token -->
-                    <input type="hidden" name="token" value="{{ $request->route('token') ?? '' }}">
+                    <input type="hidden" name="token" value="{{ $tokenPass }}">
+                    <input type="hidden" name="us_email" value="{{ $email }}">
 
                     <div class="mb-3">
                         <label for="email" class="form-label text-dark small">E-mail Cadastrado</label>
                         <div class="input-group">
                             <span class="input-group-text"><i
                                     class="fa-solid fa-envelope text-success opacity-50"></i></span>
-                            <input type="email" class="form-control" name="email" id="email" placeholder="seu@email.com.br"
-                                required readonly value="{{ old('email', $request->email ?? '') }}">
+                            <input type="email" class="form-control" name="email" id="email" placeholder="seu@email.com.br" required readonly value="{{ old('email', $request->email ?? '') }}">
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="password" class="form-label text-dark small">Nova Senha</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i
-                                    class="fa-solid fa-lock text-success opacity-50"></i></span>
-                            <input type="password" class="form-control" name="password" id="password"
-                                placeholder="Mínimo de 8 caracteres" required autocomplete="new-password" autofocus>
+                            <span class="input-group-text"><i class="fa-solid fa-lock text-success opacity-50"></i></span>
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Mínimo de 8 caracteres" required autocomplete="new-password" autofocus>
                         </div>
                         <div class="form-text small opacity-75">Use letras, números e símbolos especiais.</div>
+                        @error('password')
+                            <div class="small text-danger mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-4">

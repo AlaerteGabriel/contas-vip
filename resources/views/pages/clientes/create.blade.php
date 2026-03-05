@@ -5,7 +5,7 @@
 @section('breadcrumb')
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="{{ route('clientes.index') }}" class="text-decoration-none text-muted">Clientes</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('dashboard.clientes.index') }}" class="text-decoration-none text-muted">Clientes</a></li>
         <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">Novo Cadastro</li>
     </ol>
 </nav>
@@ -13,7 +13,7 @@
 
 @section('content')
 <div class="d-flex align-items-center mb-4">
-    <a href="{{ route('clientes.index') }}"
+    <a href="{{ route('dashboard.clientes.index') }}"
         class="btn btn-light rounded-circle shadow-sm p-2 me-3 d-flex justify-content-center align-items-center"
         style="width: 40px; height: 40px; transition: all 0.2s;" onmouseover="this.classList.add('bg-white')"
         onmouseout="this.classList.remove('bg-white')">
@@ -30,9 +30,9 @@
         <div class="card shadow-sm border-0">
             <div class="card-body p-4 p-md-5">
                 <!-- Change action to route in Laravel -->
-                <form action="{{ route('clientes.store') }}" method="POST">
+                <form action="{{ route('dashboard.clientes.store') }}" method="POST">
                     @csrf
-                    
+
                     <h6 class="fw-bold text-primary mb-4 text-uppercase"
                         style="font-size: 0.8rem; letter-spacing: 1px;"><i
                             class="fa-regular fa-id-card me-2"></i>Informações Pessoais</h6>
@@ -125,7 +125,7 @@
                     </div>
 
                     <div class="d-flex align-items-center justify-content-end gap-3 mt-5 pt-3 border-top">
-                        <a href="{{ route('clientes.index') }}" class="btn btn-light fw-medium px-4">Cancelar</a>
+                        <a href="{{ route('dashboard.clientes.index') }}" class="btn btn-light fw-medium px-4">Cancelar</a>
                         <button type="submit" class="btn btn-primary fw-medium px-5 shadow-sm"><i
                                 class="fa-solid fa-check me-2"></i>Salvar Cliente</button>
                     </div>

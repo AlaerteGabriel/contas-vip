@@ -20,6 +20,7 @@
 @endpush
 
 @section('content')
+
 <div class="card shadow-sm border-0">
     <div class="card-header bg-white pt-4 pb-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
         <h5 class="mb-0 fw-bold">Lista de Clientes</h5>
@@ -30,7 +31,7 @@
                 <input type="text" class="form-control border-start-0 ps-0" placeholder="Buscar cliente...">
             </div>
             <!-- Redirecionando para a nova tela de cadastro -->
-            <a href="{{ route('clientes.create') }}"
+            <a href="{{ route('dashboard.clientes.create') }}"
                 class="btn btn-primary d-flex align-items-center gap-2 text-nowrap shadow-sm">
                 <i class="fa-solid fa-plus"></i> Novo Cliente
             </a>

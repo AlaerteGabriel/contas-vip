@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 
+use AllowDynamicProperties;
 use App\Models\User;
 use App\Helpers\UtilHelper;
 use App\Interfaces\UsersInterface;
@@ -11,8 +12,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 
+#[AllowDynamicProperties]
 class UsersRepository implements UsersInterface
 {
+
+    public function __construct()
+    {
+        // Aqui o PHP já permite lógica dinâmica
+        $this->idUser = auth()->id();
+    }
 
     public function add(array $attr, $tipoRetorno = 'redirect') : User|Bool|RedirectResponse
     {
@@ -79,7 +87,7 @@ class UsersRepository implements UsersInterface
             }
 
             User::updateOrCreate(
-                ['us_id' => $idUser],
+                ['us_id' => $idUser ?? $this->idUser],
                 $attr
             );
 

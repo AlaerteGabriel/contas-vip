@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('us_nome', length: 80);
             $table->string('us_email', length: 80)->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->char('us_password', 60);
+            $table->string('us_password', 255);
             $table->enum('us_status', ['1','2'])->index()->default(1);
             $table->string('us_remember_token', 100)->nullable();
             $table->timestamps();

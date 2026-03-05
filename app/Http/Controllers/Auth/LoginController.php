@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
@@ -37,25 +38,7 @@ class LoginController extends Controller
         }
 
         $request->session()->regenerate();
-        return redirect()->intended(route('carteira.acc.index'));
-    }
-
-    public function checkEmail(string $id, string $hash)
-    {
-
-        if(empty($id) || empty($hash)){
-            return redirect()->route('carteira.login')->with('error', 'A verificação de email falhou.');
-        }
-
-        $id = Str::fromBase64($id);
-        $user = User::find($id);
-        if($user->us_remember_token == $hash){
-            $user->email_verified_at = now();
-            $user->us_status = 1;
-            $user->save();
-            return redirect()->route('carteira.login.index')->with('success', 'Email verificado com sucesso! Faça seu login.');
-        }
-
+        return redirect()->intended(route('dashboard.index'));
     }
 
     public function destroy(Request $request) : RedirectResponse
@@ -65,7 +48,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('carteira.login');
+        return redirect()->route('admin.login');
     }
 
 }
