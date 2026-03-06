@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('se_senha_anterior')->nullable();
             $table->date('se_data_renovacao')->index();
             $table->enum('se_status', ['Free', 'Premium'])->index()->default('Free');
-            $table->date('se_data_ult_assinatura')->index();
+            $table->date('se_data_ult_assinatura')->nullable()->index()->default(null);
             $table->unsignedInteger('se_qtd_assinantes');
             $table->enum('se_ass_hoje', ['Sim', 'Nao'])->index()->default('Nao');
             $table->timestamps();

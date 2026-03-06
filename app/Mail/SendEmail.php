@@ -18,7 +18,7 @@ class SendEmail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct( public $dados)
+    public function __construct( public $assunto, public $msg)
     {
         //
     }
@@ -29,7 +29,7 @@ class SendEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Carteira Financeira - Cadastro do Cliente',
+            subject: $this->assunto,
         );
     }
 
@@ -39,10 +39,7 @@ class SendEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'email/novo-user',
-            with: [
-                'url' => route('carteira.checkemail', ['id' => Str::toBase64($this->dados['us_id']), 'hash' => $this->dados['us_remember_token']]),
-            ]
+            htmlString: $this->msg, // o template já vem pronto do DB
         );
     }
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\ConfiguracoesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\EmailMarketingController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ServicosController;
@@ -62,10 +63,7 @@ Route::prefix('/')->group(function(){
 
         Route::prefix('/config')->controller(ConfiguracoesController::class)->group(function(){
             Route::get('/', 'index')->name('dashboard.config.index');
-            Route::get('/email-marketing', 'emailMarketing')->name('dashboard.config.email-marketing');
             Route::get('/importar-excel', 'importar')->name('dashboard.config.importarExcel');
-
-            Route::post('/email-marketing', 'emailMarketingStore')->name('dashboard.config.email-marketing.store');
             Route::post('/produtosstorecsv', 'produtosStoreCsv')->name('dashboard.config.produtosStoreCsv');
         });
 
@@ -79,10 +77,17 @@ Route::prefix('/')->group(function(){
 
         Route::prefix('/templates-email')->controller(TemplatesEmailController::class)->group(function(){
             Route::get('/', 'index')->name('dashboard.config.email-templates');
-            Route::post('/email-templates', 'store')->name('dashboard.config.email-templates.store');
+            Route::post('/store', 'store')->name('dashboard.config.email-templates.store');
             Route::post('/delete', 'ajaxDestroy')->name('dashboard.config.email-templates.ajaxDestroy');
             Route::get('/get-templates', 'getDatatablesEmailTemplates')->name('dashboard.config.email-templates.getDatatablesEmailTemplates');
-            Route::get('/templates-edit', 'ajaxEdit')->name('dashboard.config.email-templates.ajaxEdit');
+            Route::get('/edit', 'ajaxEdit')->name('dashboard.config.email-templates.ajaxEdit');
+        });
+
+        Route::prefix('/email-marketing')->controller(EmailMarketingController::class)->group(function(){
+
+            Route::get('/get-contatos', 'criar')->name('dashboard.config.email-marketing.getContatos');
+            Route::get('/', 'index')->name('dashboard.config.email-marketing');
+            Route::post('/store', 'store')->name('dashboard.config.email-marketing.store');
         });
 
     });

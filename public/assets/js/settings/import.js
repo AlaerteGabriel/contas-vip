@@ -5,7 +5,7 @@ var uppy = Uppy.Core({
     allowMultipleUploads: false,
     restrictions: {
         minNumberOfFiles: 1,
-        allowedFileTypes: ['application/excel', 'application/csv', 'text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/msexcel']
+        allowedFileTypes: ['application/vnd.ms-excel.sheet.macroEnabled.12','application/excel', 'application/csv', 'text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/msexcel']
     }
 
 }).use(Uppy.Dashboard, {

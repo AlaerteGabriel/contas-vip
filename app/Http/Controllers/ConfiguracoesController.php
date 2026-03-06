@@ -89,7 +89,7 @@ class ConfiguracoesController extends Controller
     public function produtosStoreCsv(Request $request)
     {
         $file = request()->file('file'); // Arquivo enviado pelo formulário
-        Excel::import(new DadosImport, $file);
+        Excel::import(new DadosImport, $file, null, \Maatwebsite\Excel\Excel::XLSX);
         return response()->json(['ok' => 1]);
     }
 

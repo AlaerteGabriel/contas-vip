@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('cl_nome', 100);
             $table->string('cl_usuario', 80)->nullable();
             $table->string('cl_email', 100)->unique()->index();
-            $table->string('cl_email_envio', 100)->index();
+            $table->string('cl_email_envio', 100)->nullable()->index();
             $table->char('cl_cel', length: 15)->nullable();
             $table->boolean('cl_banido')->default(false)->index();
             $table->string('cl_obs')->nullable();

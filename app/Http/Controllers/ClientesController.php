@@ -21,7 +21,7 @@ class ClientesController extends Controller
 
     public function create()
     {
-
+        return view(self::PATH_VIEW.'create');
     }
 
     public function store()

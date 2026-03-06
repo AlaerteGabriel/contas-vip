@@ -2,76 +2,42 @@
 
 namespace App\Imports;
 
-use App\Models\Produtos;
-use App\Traits\ProductImageTrait;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
+use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
+use Maatwebsite\Excel\Row;
 
-class DadosImport implements ToCollection, WithHeadingRow
+class DadosImport implements OnEachRow, WithHeadingRow, WithChunkReading, SkipsEmptyRows
 {
-
-    use ProductImageTrait;
-    public function collection(Collection $rows)
+    public function onRow(Row $row)
     {
 
-        $produtos = [];
-        $icone = null;
+        $linhaLimpa = [];
 
-        foreach ($rows AS $key => $row) {
+        // Ignoramos o Laravel e pegamos o iterador de células direto da fonte
+        $celulas = $row->getDelegate()->getCellIterator();
+        $celulas->setIterateOnlyExistingCells(false);
 
-            $prod = Produtos::create([
-                //
-                'pr_id_operador' => Auth::guard('admin')->id(),
-                'pr_id_categoria' => 1,
-                'pr_id_marca' => 1,
-                'pr_icone' => $row['pr_icone'] ?? null,
-                'pr_nome' => $row['pr_nome'],
-                'pr_slug' => Str::slug($row['pr_nome']),
-                'pr_descricao' => $row['pr_descricao'] ?? null,
-                'pr_descricao_curta' => $row['pr_descricao'] ?? null,
-                'pr_qtdEstoque' => $row['pr_qtdestoque'] ?? 1,
-                'pr_valor' => $row['pr_valor'],
-                'pr_sku' => $row['pr_sku'] ?? null,
-                'pr_codbarras' => $row['pr_codbarras'] ?? null
-            ]);
-
-            if(!$row['pr_icone']){
-                $icone = $this->getImageProduct($row['pr_nome'], $prod->pr_id);
-                $prod->pr_icone = $icone;
-                $prod->save();
+        foreach ($celulas as $celula) {
+            if ($celula->isFormula()) {
+                // Arranca o valor do cache visual salvo pelo Excel
+                $valor = $celula->getOldCalculatedValue();
+            } else {
+                // Pega o valor normal
+                $valor = $celula->getValue();
             }
 
-//            $produtos[] = [
-//                //
-//                'pr_id_operador' => Auth::guard('admin')->id(),
-//                'pr_id_categoria' => 1,
-//                'pr_id_marca' => 1,
-//                'pr_icone' => $row['pr_icone'],
-//                'pr_nome' => $row['pr_nome'],
-//                'pr_slug' => Str::slug($row['pr_nome']),
-//                'pr_descricao' => $row['pr_descricao'] ?? null,
-//                'pr_descricao_curta' => $row['pr_descricao'] ?? null,
-//                'pr_qtdEstoque' => $row['pr_qtdestoque'] ?? 1,
-//                'pr_valor' => $row['pr_valor'],
-//                'pr_sku' => $row['pr_sku'] ?? null,
-//                'pr_codbarras' => $row['pr_codbarras'] ?? null
-//            ];
-
+            // Adiciona no nosso array limpo
+            $linhaLimpa[] = $valor;
         }
 
-        return true;
+        // Printa apenas a primeira linha processada e para o código
+        print_r($linhaLimpa);
     }
 
-    public function getCsvSettings(): array
+    public function chunkSize(): int
     {
-        return [
-            'delimiter' => ',', // Altere para ';' se necessário
-            'input_encoding' => 'UTF-8',
-        ];
+        return 500;
     }
 }

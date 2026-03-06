@@ -10,7 +10,7 @@ abstract class Controller
 {
     //
     use AuthorizesRequests; // Adicione esta linha
-    public $registrosPorPagina = 20;
+    public $registrosPorPagina = 10;
     protected $idUser;
     public $msgSuccess = 'Informações salvas com sucesso!!';
     public $msgError = 'Falha ao salvar informações, tente novamente.';
