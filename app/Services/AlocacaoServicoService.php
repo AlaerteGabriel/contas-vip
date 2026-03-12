@@ -23,7 +23,7 @@ class AlocacaoServicoService
 
         return $query->where(function ($q) {
             $q->where('se_status', 'davez');
-            $q->whereNull('se_limite')->orWhereColumn('se_qtd_assinantes', '<', 'se_limite');
+            $q->orWhereNull('se_limite')->orWhereColumn('se_qtd_assinantes', '<', 'se_limite');
         })
         ->orderByRaw("CASE WHEN se_status = 'davez' THEN 1 ELSE 0 END DESC")
         ->orderBy('se_qtd_assinantes', 'asc')

@@ -1,6 +1,35 @@
 "use strict";
 
+function getDashStats() {
+    $.ajax({
+        url: BASE_URL_DASHBOARD + '/servicos/serv-info',
+        type: 'GET',
+        dataType: 'json',
+        // Essa é a propriedade que impede o bloqueio da página
+        global: false,
+        success: function (data) {
+            if (data) {
+                // ... seu código de contagem aqui ...
+                const count1 = new countUp.CountUp("total-servicos", data.servicos, {suffix: '+'});
+                count1.start();
+
+                const count2 = new countUp.CountUp("total-servicos-ativos", data.servicos_ativos, {suffix: '+'});
+                count2.start();
+
+                const count3 = new countUp.CountUp("total-renovar", data.renovacoes, {suffix: '+'});
+                count3.start();
+
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error("Erro ao carregar dados:", textStatus, errorThrown);
+        }
+    });
+}
+
 $(document).ready(function () {
+
+    getDashStats();
 
     const $table = $('.yajra-datatable'); // referência única da tabela
     var table = $('.yajra-datatable').DataTable({

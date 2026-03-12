@@ -39,6 +39,9 @@ Route::prefix('/')->group(function(){
 
         Route::get('', [DashboardController::class, 'index'])->name('dashboard.index');
 
+        Route::get('/dash-info', [DashboardController::class, 'estatisticas'])->name('dashboard.estatisticas');
+        Route::get('/ultimos', [DashboardController::class, 'getDatatables'])->name('dashboard.ultimos.getDatatables');
+
         Route::prefix('/perfil')->controller(PerfilController::class)->group(function(){
             Route::get('/', 'index')->name('dashboard.perfil.index');
             Route::post('/update', 'update')->name('dashboard.perfil.update');
@@ -62,6 +65,7 @@ Route::prefix('/')->group(function(){
             Route::post('/update', 'update')->name('dashboard.servicos.update');
             Route::post('/delete', 'ajaxDestroy')->name('dashboard.servicos.ajaxDestroy');
             Route::get('/get', 'getDatatables')->name('dashboard.servicos.getDatatables');
+            Route::get('/serv-info','estatisticas')->name('dashboard.servicos.estatisticas');
         });
 
         Route::prefix('/pedidos')->controller(PedidosController::class)->group(function(){
@@ -92,7 +96,6 @@ Route::prefix('/')->group(function(){
         });
 
         Route::prefix('/email-marketing')->controller(EmailMarketingController::class)->group(function(){
-
             Route::get('/get-contatos', 'criar')->name('dashboard.config.email-marketing.getContatos');
             Route::get('/', 'index')->name('dashboard.config.email-marketing');
             Route::post('/store', 'store')->name('dashboard.config.email-marketing.store');
@@ -113,6 +116,7 @@ Route::prefix('/')->group(function(){
             Route::post('/banir-cliente', 'ajaxBanCliente')->name('dashboard.controle.ajaxBanCliente');
             Route::post('/banir-cliente-servico', 'ajaxBanClienteServico')->name('dashboard.controle.ajaxBanClienteServico');
             Route::post('/email-adicional', 'addEmailAdicional')->name('dashboard.controle.addEmailAdicional');
+            Route::post('/delete', 'ajaxDestroy')->name('dashboard.controle.ajaxDestroy');
         });
 
     });

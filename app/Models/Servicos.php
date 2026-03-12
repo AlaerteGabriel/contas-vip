@@ -102,8 +102,7 @@ class Servicos extends Model
             'cv_clientes_servicos',
             'cs_servico_id',
             'cs_cliente_id'
-        )
-            ->withPivot(['cs_status', 'cs_data_termino', 'cs_aviso_vencimento']);
+        )->withPivot(['cs_status', 'cs_data_termino', 'cs_aviso_vencimento']);
     }
 
 }

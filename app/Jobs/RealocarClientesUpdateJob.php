@@ -49,7 +49,7 @@ class RealocarClientesUpdateJob implements ShouldQueue
             // Salva os dados na memória antes de apagar
             $clientesParaRealocar[] = [
                 'cliente' => $assinatura->cliente,
-                'dadosPivot' => $assinatura->toArray()
+                'dadosPivot' => $assinatura->getAttributes()
             ];
 
             // Deleta o controle. Isso aciona o seu Model Observer/Booted
@@ -65,6 +65,7 @@ class RealocarClientesUpdateJob implements ShouldQueue
         // ==========================================
         $delaySegundos = 1;
         foreach ($clientesParaRealocar AS $item) {
+
             $cliente = $item['cliente'];
             $dadosPivot = $item['dadosPivot'];
 
@@ -90,6 +91,7 @@ class RealocarClientesUpdateJob implements ShouldQueue
 
                     Controle::create($dadosNovos);
                     $novoServico->increment('se_qtd_assinantes');
+
                 });
 
                 // Dispara o e-mail pro cliente com a nova senha e o serviço que ele caiu

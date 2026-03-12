@@ -54,7 +54,7 @@ $(document).ready(function () {
             {data: 'username', name: 'username', orderable: true},
             {data: 'senha', name: 'senha', orderable: false, searchable: false},
             {data: 'dt_renovacao', name: 'dt_renovacao', orderable: false, searchable: false},
-            {data: 'qtdAssinatura', name: 'qtdAssinatura', orderable: false, searchable: false},
+            {data: 'qtd_update', name: 'qtd_update', orderable: false, searchable: false},
             {data: 'status', name: 'status', orderable: false, searchable: false},
             {data: 'emailad', name: 'emailad', orderable: false, searchable: false},
             {data: 'obs', name: 'obs', orderable: false, searchable: false},
@@ -277,5 +277,43 @@ $(document).ready(function () {
     //     });
     //
     // });
+
+    $(document).on('click', '.btdelete', function(e){
+
+        let idUser = $(this).attr('data-id');
+
+        if(!idUser){
+            return false;
+        }
+
+        Swal.fire({
+            title: 'Cuidado! Deseja realmente apagar?',
+            text: 'Essa operação não poderá ser desfeita.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, apague',
+        }).then((result) => {
+
+            if (result.value) {
+                $.ajax({
+                    url: ROUTE_DELETE,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {idReg: idUser, _token:TOKEN},
+                    success: function (data) {
+                        if(data.ok) {
+                            notificar('Registro excluído com sucesso!', 'success');
+                            table.ajax.reload();
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Erro ao carregar dados:", textStatus, errorThrown);
+                    }
+                });
+            }
+
+        });
+
+    });
 
 });

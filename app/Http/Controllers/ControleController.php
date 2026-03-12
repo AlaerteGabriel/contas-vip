@@ -52,7 +52,9 @@ class ControleController extends Controller
 
             DB::beginTransaction();
 
-            Controle::where('cs_id', $data['cs_id'])->update($data);
+            $con = Controle::find($data['cs_id']);
+            $con->fill($data);
+            $con->save();
 
             DB::commit();
 
@@ -163,10 +165,7 @@ class ControleController extends Controller
             return false;
         }
 
-        $data = Controle::with([
-            'cliente' => function ($query) {
-                $query->withCount('assinaturas'); // Isso vai criar a propriedade 'assinaturas_count' automaticamente
-            }, 'servico', 'pedido', 'templateEmail']);
+        $data = Controle::with(['cliente', 'servico', 'pedido', 'templateEmail']);
 
         // Filtro por pesquisa
         if ($request->filled('busca')){
@@ -323,8 +322,8 @@ class ControleController extends Controller
 
                 return $html;
             })
-            ->addColumn('qtdAssinatura', function($row) {
-                return $row->cliente->assinaturas_count;
+            ->addColumn('qtd_update', function($row) {
+                return 0;
             })
             ->addColumn('status', function($row) {
                 //
@@ -370,16 +369,45 @@ class ControleController extends Controller
                     $btn.= '<button class="btn btn-sm btn-danger disabled"><i class="fa-solid fa-user-xmark"></i></button>';
                 }
 
+                $btn.= '<a href="javascript:;" data-id="'.Str::toBase64($row->cs_id).'" class="btn btn-icon btn-danger btn-sm ms-1 btdelete" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Excluir permanentemente"><i class="fas fa-trash" aria-hidden="true"></i></a>';
+
                 $btn.= '</div>';
 
                 return $btn;
             })
 
             //Força a coluna a ser gerada com HTML
-            ->rawColumns(['servico','email_envio','codigo','username','senha','acoes','status','dt_renovacao','qtdAssinatura','obs', 'emailad'])
+            ->rawColumns(['servico','email_envio','codigo','username','senha','acoes','status','dt_renovacao','obs', 'emailad'])
             ->make(true);
 
         return $dataTable;
+    }
+
+    public function ajaxDestroy(Request $request, Controle $controle)
+    {
+
+        if(!$request->ajax()){
+            return false;
+        }
+
+        $validated = $request->validate([
+            'idReg' => 'required|string',
+        ]);
+
+        $resp['ok'] = false;
+        $resp['permissao'] = false;
+        $resp['st'] = false;
+
+        $idReg = Str::fromBase64($validated['idReg']);
+        $op = Controle::find($idReg);
+
+        if($op->delete()){
+            $resp['ok'] = true;
+            $resp['permissao'] = true;
+        }
+
+        return response()->json($resp);
+
     }
 
 }

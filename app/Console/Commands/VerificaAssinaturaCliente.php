@@ -55,9 +55,9 @@ class VerificaAssinaturaCliente extends Command
         Mail::purge('smtp');
 
         //
-        $controles = Controle::with(['cliente', 'servico'])
+        $controles = Controle::with(['cliente', 'servico','templateEmail'])
             ->whereHas('cliente', fn($q) => $q->where('cl_banido', 0))
-            ->whereHas('servico', fn($q) => $q->whereNot('se_status', 'fechada'))
+            ->whereHas('servico', fn($q) => $q->whereNot('se_status', 'fechada')->whereNot('se_tipo','Free'))
             ->where('cs_status', 'ativo')
             ->get();
 
@@ -93,6 +93,13 @@ class VerificaAssinaturaCliente extends Command
                     $mensagem = str_replace('{linkrenovPT}', '', $mensagem);
                     $mensagem = str_replace('{nome}', $primeiroNome, $mensagem);
                     $mensagem = str_replace('{saudacao}', $saudacao, $mensagem);
+
+                    if($controle->templateEmail) {
+                        $assunto2  = $controle->templateEmail->te_assunto;
+                        $mensagem2 = str_replace('{nome}', $primeiroNome, $controle->templateEmail->te_modelo);
+                        Mail::to($emailEnvio)->queue(new SendEmail($assunto2, $mensagem2));
+                    }
+
                     //enviar o email pra fila de lembrete cod X lembrete
                     Mail::to($emailEnvio)->queue(new SendEmail($assunto, $mensagem));
                 }

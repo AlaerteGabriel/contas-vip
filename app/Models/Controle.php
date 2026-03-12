@@ -38,6 +38,23 @@ class Controle extends Model
                 Servicos::where('se_id', $controle->cs_servico_id)->decrement('se_qtd_assinantes');
             }
         });
+
+        static::updated(function ($controle) {
+            if($controle->isDirty('cs_servico_id')){
+                $servicoAnterior = $controle->getOriginal('cs_servico_id');
+                $novoServico = $controle->cs_servico_id;
+
+                if($servicoAnterior) {
+                    $sev = Servicos::find($servicoAnterior);
+                    $sev->decrement('se_qtd_assinantes');
+                }
+
+                if($novoServico) {
+                    $sev = Servicos::find($novoServico);
+                    $sev->increment('se_qtd_assinantes');
+                }
+            }
+        });
     }
 
     protected function casts(): array

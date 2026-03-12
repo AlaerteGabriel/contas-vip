@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\IdFormRequest;
+use App\Models\Clientes;
 use App\Models\Contas;
+use App\Models\Controle;
+use App\Models\Pedidos;
 use App\Models\Servicos;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -248,7 +251,18 @@ class ServicosController extends Controller
                 return $row->se_tipo;
             })
             ->addColumn('dt_update', function($row) {
-                return ($row->se_data_update) ? $row->se_data_update->format('d/m/Y') : '--';
+                $comp = false;
+                $dataUpdate = ($row->se_data_update) ? $row->se_data_update->format('d/m/Y') : '--';
+
+                if($row->se_data_update && Carbon::parse($row->se_data_update)->isToday()) {
+                    $comp = '<small class="fw-medium text-muted d-block mt-1">HOJE!</small>';
+                }
+
+                $html = '<div class="fw-semibold text-dark mb-1">
+                            <i class="fa-regular fa-calendar text-dark me-1"></i> '.$dataUpdate.'
+                        </div>'.$comp;
+
+                return $html;
             })
             ->addColumn('qtdAssinantes', function($row) {
                 $limite = ($row->se_limite) ?: '--';
@@ -292,7 +306,7 @@ class ServicosController extends Controller
             })
 
             //Força a coluna a ser gerada com HTML
-            ->rawColumns(['nome','email','codigo','username','senha','senha_ant','acoes','status','dt_renovacao','dt_renovacao','limite','qtdAssinantes'])
+            ->rawColumns(['nome','email','codigo','username','senha','senha_ant','acoes','status','dt_renovacao','dt_update','limite','qtdAssinantes'])
             ->make(true);
 
         return $dataTable;
@@ -322,6 +336,37 @@ class ServicosController extends Controller
         }
 
         return response()->json($resp);
+
+    }
+
+    public function estatisticas(Request $request)
+    {
+
+        if(!$request->ajax()){
+            return false;
+        }
+
+        $servicos = Servicos::count();
+        $servAtivos = Servicos::whereIn('se_status', ['ativa','davez'])->where('se_tipo', 'Premium')->count();
+
+//        $renovacoes = Controle::whereBetween('cs_data_termino', [
+//            Carbon::today(),
+//            Carbon::today()->addDays(7)
+//        ])->where('cs_status', 'ativo')->count();
+
+        $renovacoes = Servicos::whereBetween('se_data_renovacao', [
+            Carbon::today(),
+            Carbon::today()->addDays(7)
+        ])->whereIn('se_status', ['ativa','davez'])->count();
+
+
+        $totais = [
+            'servicos' => $servicos,
+            'servicos_ativos' => $servAtivos,
+            'renovacoes' => $renovacoes
+        ];
+
+        return response()->json($totais);
 
     }
 

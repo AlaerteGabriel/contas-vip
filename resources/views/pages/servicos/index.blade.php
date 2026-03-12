@@ -38,38 +38,39 @@
     <script src="{{asset('assets/plugins/datatables/datatables.bundle.js')}}"></script>
     <script src="{{ asset('assets/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/countUp/countUp.umd.js') }}"></script>
     <script src="{{ asset('assets/js/servicos/index.js') }}"></script>
 @endpush
 
 @section('content')
 
 <!-- Stats Overview -->
-{{--<div class="row mb-4">--}}
-{{--    <div class="col-md-4">--}}
-{{--        <div class="card h-100 border-start border-primary border-4 shadow-sm mb-0">--}}
-{{--            <div class="card-body">--}}
-{{--                <p class="text-muted fw-semibold text-uppercase small mb-1">Total de Serviços Vinculados</p>--}}
-{{--                <h3 class="mb-0 fw-bold text-dark">857</h3>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--    <div class="col-md-4">--}}
-{{--        <div class="card h-100 border-start border-success border-4 shadow-sm mb-0">--}}
-{{--            <div class="card-body">--}}
-{{--                <p class="text-muted fw-semibold text-uppercase small mb-1">Contas Ativas Sem Pendências</p>--}}
-{{--                <h3 class="mb-0 fw-bold text-dark">820</h3>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--    <div class="col-md-4">--}}
-{{--        <div class="card h-100 border-start border-danger border-4 shadow-sm mb-0">--}}
-{{--            <div class="card-body">--}}
-{{--                <p class="text-muted fw-semibold text-uppercase small mb-1">Para Renovar (Próx. 7 Dias)</p>--}}
-{{--                <h3 class="mb-0 fw-bold text-dark text-danger">37</h3>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--</div>--}}
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card h-100 border-start border-primary border-4 shadow-sm mb-0">
+            <div class="card-body">
+                <p class="text-muted fw-semibold text-uppercase small mb-1">Total de Serviços Vinculados</p>
+                <h3 class="mb-0 fw-bold text-dark" id="total-servicos"></h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-start border-success border-4 shadow-sm mb-0">
+            <div class="card-body">
+                <p class="text-muted fw-semibold text-uppercase small mb-1">Serviços Ativos</p>
+                <h3 class="mb-0 fw-bold text-dark" id="total-servicos-ativos"></h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-start border-danger border-4 shadow-sm mb-0">
+            <div class="card-body">
+                <p class="text-muted fw-semibold text-uppercase small mb-1">Para Renovar (Próx. 7 Dias)</p>
+                <h3 class="mb-0 fw-bold text-dark text-danger" id="total-renovar"></h3>
+            </div>
+        </div>
+    </div>
+</div>
 
 <x-alert />
 <!-- Table Card -->

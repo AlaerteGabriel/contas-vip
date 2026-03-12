@@ -18,6 +18,7 @@ class ServicosObserver
         // Se o status mudou E o novo status é 'DESLIGADA'
         if ($servico->isDirty('se_status') && $servico->se_status === 'desligada') {
             // Dispara o Job passando o serviço que acabou de ser desligado
+            //removi a realocação imediata, pois é pra rodar pelo CRON;
             //RealocarClientesUpdateJob::dispatch($servico);
         }
     }

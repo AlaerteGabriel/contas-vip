@@ -92,4 +92,3 @@ function notificar(msg, tipo = 'success', time = 3000)
     }
 
 }
-

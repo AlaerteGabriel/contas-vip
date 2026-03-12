@@ -1,5 +1,32 @@
 "use strict";
+function getDashStats() {
+    $.ajax({
+        url: BASE_URL_DASHBOARD + '/dash-info',
+        type: 'GET',
+        dataType: 'json',
+        // Essa é a propriedade que impede o bloqueio da página
+        global: false,
+        success: function (data) {
+            if (data) {
+                // ... seu código de contagem aqui ...
+                const count1 = new countUp.CountUp("total-clientes", data.clientes, {suffix: '+'});
+                count1.start();
 
+                const count2 = new countUp.CountUp("total-servicos", data.servicos, {suffix: '+'});
+                count2.start();
+
+                const count3 = new countUp.CountUp("total-pedidos", data.pedidos, {suffix: '+'});
+                count3.start();
+
+                const count4 = new countUp.CountUp("total-contas", data.contas, {suffix: '+'});
+                count4.start();
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error("Erro ao carregar dados:", textStatus, errorThrown);
+        }
+    });
+}
 $(document).ready(function () {
 
     var table = $('.yajra-datatable').DataTable({
@@ -40,10 +67,6 @@ $(document).ready(function () {
         ajax: {
             url: ROUTE_DATATABLES,
             global:false,
-            // Adiciona os dados dos filtros à requisição AJAX
-            data: function (d) {
-                d.busca = $('#busca').val();
-            }
         },
         columns: [
             {data: 'cl_id', name: 'cl_id'},
@@ -51,8 +74,6 @@ $(document).ready(function () {
             {data: 'email', name: 'email', orderable: true},
             {data: 'cel', name: 'cel', orderable: false},
             {data: 'banido', name: 'banido', orderable: false},
-            {data: 'obs', name: 'obs', orderable: false},
-            {data: 'acoes', name: 'acoes', orderable: false, searchable: false},
         ],
         drawCallback: function() {
 
@@ -67,49 +88,6 @@ $(document).ready(function () {
 
     });
 
-    const buscarTabela = debounce(function() {
-        table.draw();
-    }, 600); // 300ms (0.3 segundos) é um bom ponto de partida
-
-    // Eventos para recarregar a tabela quando um filtro é alterado
-    $('#busca').on('change keyup', buscarTabela);
-
-    $(document).on('click', '.btdelete', function(e){
-
-        let idUser = $(this).attr('data-id');
-
-        if(!idUser){
-            return false;
-        }
-
-        Swal.fire({
-            title: 'Cuidado! Deseja realmente apagar?',
-            text: 'Essa operação não poderá ser desfeita.',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Sim, apague',
-        }).then((result) => {
-
-            if (result.value) {
-                $.ajax({
-                    url: ROUTE_DELETE,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {idReg: idUser, _token:TOKEN},
-                    success: function (data) {
-                        if(data.ok) {
-                            notificar('Registro excluído com sucesso!', 'success');
-                            table.ajax.reload();
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.error("Erro ao carregar dados:", textStatus, errorThrown);
-                    }
-                });
-            }
-
-        });
-
-    });
+    getDashStats();
 
 });
