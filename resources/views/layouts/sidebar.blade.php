@@ -10,8 +10,23 @@
         </li>
         <li class="nav-item title mt-3 mb-1 px-4 text-uppercase small text-muted fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">Gestão</li>
         <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('dashboard.controle.*') ? 'active' : '' }}" href="{{ route('dashboard.controle.index') }}">
+                <i class="fa-solid fa-arrows-turn-to-dots"></i> Controle
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('dashboard.clientes.*') ? 'active' : '' }}" href="{{ route('dashboard.clientes.index') }}">
                 <i class="fa-solid fa-users"></i> Clientes
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('dashboard.pedidos.*') ? 'active' : '' }}" href="{{ route('dashboard.pedidos.index') }}">
+                <i class="fa-solid fa-cart-arrow-down"></i> Pedidos/Vendas
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('dashboard.contas.*') ? 'active' : '' }}" href="{{ route('dashboard.contas.create') }}">
+                <i class="fa-solid fa-building"></i> Contas
             </a>
         </li>
         <li class="nav-item">

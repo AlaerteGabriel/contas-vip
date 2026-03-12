@@ -61,13 +61,13 @@ class SmtpController extends Controller
 
             DB::commit();
 
+            return back()->with('success', $this->msgSuccess);
+
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Falha ao salvar smtp: '.$e->getMessage());
             return back()->with('error', $this->msgError)->withInput();
         }
-
-        return back()->with('success', $this->msgSuccess);
     }
 
     public function ajaxSmtpEdit(Request $request, IdRequest $idRequest)

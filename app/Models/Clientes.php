@@ -41,4 +41,21 @@ class Clientes extends Model
         return $this->hasMany(Pedidos::class, 'pe_cliente_id', 'cl_id');
     }
 
+    public function servicos()
+    {
+        return $this->belongsToMany(
+            Servicos::class,
+            'cv_clientes_servicos', // Nome da tabela pivot
+            'cs_cliente_id',         // FK do cliente na pivot
+            'cs_servico_id'          // FK do serviço na pivot
+        )
+            ->withPivot(['cs_status', 'cs_data_termino', 'cs_aviso_vencimento']);
+    }
+
+    public function assinaturas()
+    {
+        // Um cliente tem vários registros de controle (assinaturas)
+        return $this->hasMany(Controle::class, 'cs_cliente_id', 'cl_id');
+    }
+
 }

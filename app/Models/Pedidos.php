@@ -37,6 +37,12 @@ class Pedidos extends Model
         'updated_at'
     ];
 
+    protected $casts = [
+        'pe_data_pedido' => 'date:d/m/Y',
+        'pe_data_inicio' => 'date:d/m/Y',
+        'pe_data_termino' => 'date:d/m/Y',
+    ];
+
     //Um pedido pertence a um cliente (logo o pedido é filho do cliente, utiliza-se belongsTo
     public function cliente(): BelongsTo
     {

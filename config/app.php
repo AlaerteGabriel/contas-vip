@@ -130,4 +130,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'webhook_token' => env('WEBHOOK_SECRET_TOKEN', '45aaeb2bbd77428197c8c6ed8b0f90ff'),
+
 ];

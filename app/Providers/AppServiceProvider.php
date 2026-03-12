@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Pedidos;
+use App\Models\Servicos;
 use App\Observers\PedidosObserver;
+use App\Observers\ServicosObserver;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,5 +31,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Pedidos::observe(PedidosObserver::class);
+        //Servicos::observe(ServicosObserver::class);
+        //Model::preventLazyLoading(!$this->app->isProduction());
     }
 }

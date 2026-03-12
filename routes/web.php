@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ConfiguracoesController;
+use App\Http\Controllers\ContasController;
+use App\Http\Controllers\ControleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordController;
@@ -46,19 +48,25 @@ Route::prefix('/')->group(function(){
         Route::prefix('/clientes')->controller(ClientesController::class)->group(function(){
             Route::get('/', 'index')->name('dashboard.clientes.index');
             Route::get('/add', 'create')->name('dashboard.clientes.create');
+            Route::get('/edit/{id}', 'edit')->name('dashboard.clientes.edit');
             Route::post('/add', 'store')->name('dashboard.clientes.store');
+            Route::post('/delete', 'ajaxDestroy')->name('dashboard.clientes.ajaxDestroy');
+            Route::get('/get', 'getDatatables')->name('dashboard.clientes.getDatatables');
         });
 
         Route::prefix('/servicos')->controller(ServicosController::class)->group(function(){
             Route::get('/', 'index')->name('dashboard.servicos.index');
-            Route::get('/add', 'create')->name('dashboard.servicos.create');
-            Route::post('/add', 'store')->name('dashboard.servicos.store');
+            Route::get('/create', 'create')->name('dashboard.servicos.create');
+            Route::get('/edit/{id}', 'edit')->name('dashboard.servicos.edit');
+            Route::post('/store', 'store')->name('dashboard.servicos.store');
+            Route::post('/update', 'update')->name('dashboard.servicos.update');
+            Route::post('/delete', 'ajaxDestroy')->name('dashboard.servicos.ajaxDestroy');
+            Route::get('/get', 'getDatatables')->name('dashboard.servicos.getDatatables');
         });
 
         Route::prefix('/pedidos')->controller(PedidosController::class)->group(function(){
             Route::get('/', 'index')->name('dashboard.pedidos.index');
-            Route::get('/add', 'create')->name('dashboard.pedidos.create');
-            Route::post('/add', 'store')->name('dashboard.pedidos.store');
+            Route::get('/get', 'getDatatables')->name('dashboard.pedidos.getDatatables');
         });
 
         Route::prefix('/config')->controller(ConfiguracoesController::class)->group(function(){
@@ -88,6 +96,23 @@ Route::prefix('/')->group(function(){
             Route::get('/get-contatos', 'criar')->name('dashboard.config.email-marketing.getContatos');
             Route::get('/', 'index')->name('dashboard.config.email-marketing');
             Route::post('/store', 'store')->name('dashboard.config.email-marketing.store');
+        });
+
+        Route::prefix('/contas')->controller(ContasController::class)->group(function(){
+            Route::get('/create', 'create')->name('dashboard.contas.create');
+            Route::post('/store', 'store')->name('dashboard.contas.store');
+            Route::post('/delete', 'ajaxDestroy')->name('dashboard.contas.ajaxDestroy');
+            Route::get('/get', 'getDatatables')->name('dashboard.contas.getDatatables');
+            Route::get('/edit', 'ajaxEdit')->name('dashboard.contas.ajaxEdit');
+        });
+
+        Route::prefix('/controle')->controller(ControleController::class)->group(function(){
+            Route::get('/', 'index')->name('dashboard.controle.index');
+            Route::get('/get', 'getDatatables')->name('dashboard.controle.getDatatables');
+            Route::post('/trocar-conta', 'trocarConta')->name('dashboard.controle.trocarConta');
+            Route::post('/banir-cliente', 'ajaxBanCliente')->name('dashboard.controle.ajaxBanCliente');
+            Route::post('/banir-cliente-servico', 'ajaxBanClienteServico')->name('dashboard.controle.ajaxBanClienteServico');
+            Route::post('/email-adicional', 'addEmailAdicional')->name('dashboard.controle.addEmailAdicional');
         });
 
     });
