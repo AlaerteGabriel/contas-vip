@@ -21,19 +21,17 @@ class WebHookController extends Controller
     {
 
         // Exemplo de validação básica
-//        $data = $request->validate([
-//            'pedido' => 'required|string',
-//            'nome' => 'required|string',
-//            'email' => 'required|string|email',
-//            'sku' => 'required|string',
-//        ]);
+        $data = $request->validate([
+            'pedido' => 'required|string',
+            'nome' => 'required|string',
+            'email' => 'required|string|email',
+            'sku' => 'required|string',
+        ]);
 
-        // Captura todo o payload JSON que chegou
-        $dados = $request->all();
+//        // Captura todo o payload JSON que chegou
+//        $dados = $request->all();
         // Grava no arquivo storage/logs/laravel.log
-        Log::info('Payload JSON Recebido:', $dados);
-
-        exit;
+        Log::info('Payload JSON Recebido:', $data);
 
         DB::beginTransaction();
 
