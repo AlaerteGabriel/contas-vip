@@ -14,6 +14,6 @@ Artisan::command('inspire', function () {
 
 Schedule::command('app:limpar-servicos')->dailyAt('21:00');
 Schedule::command('app:verifica-assinatura-cliente')->dailyAt('14:00');
+Schedule::command('app:verifica-assinatura')->dailyAt('20:00');
 
-//Schedule::command('app:verifica-assinatura')->dailyAt('12:00');
 //Schedule::command('app:limpar-servicos')->everyMinute();

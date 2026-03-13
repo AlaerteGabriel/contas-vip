@@ -19,7 +19,7 @@ class ServicosObserver
         if ($servico->isDirty('se_status') && $servico->se_status === 'desligada') {
             // Dispara o Job passando o serviço que acabou de ser desligado
             //removi a realocação imediata, pois é pra rodar pelo CRON;
-            //RealocarClientesUpdateJob::dispatch($servico);
+            RealocarClientesUpdateJob::dispatch($servico);
         }
     }
 
@@ -34,6 +34,7 @@ class ServicosObserver
 
             $servico->se_data_update = date('Y-m-d');
             $servico->se_senha_anterior = $senhaAntiga;
+            $servico->se_qtd_update = ($servico->se_qtd_update ?? 0) + 1;
 
             if($servico->se_status == 'ativa'){
                 // Dispara o Job passando o serviço que acabou de ser desligado

@@ -125,6 +125,38 @@ class ServicosController extends Controller
 
     }
 
+    public function altSenha(Request $request)
+    {
+
+        $data = $request->validate([
+            'se_id' => 'required|string',
+            'se_senha_atual' => 'required|string',
+        ]);
+
+        $idReg = Str::fromBase64($data['se_id']);
+
+        DB::beginTransaction();
+
+        try {
+
+            // 1. Instancia o model (carrega os dados para a memória)
+            $servico = Servicos::where('se_id', $idReg)->firstOrFail();
+            // 2. Atualiza via Eloquent (Isto dispara os eventos e aciona o Observer!)
+            $servico->se_senha_atual = $data['se_senha_atual'];
+            $servico->save();
+
+            DB::commit();
+
+            return back()->with('success', $this->msgSuccess);
+
+        }catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Falha ao salvar registro: '.$e->getMessage());
+            return back()->with('error', $this->msgError.$e->getMessage())->withInput();
+        }
+
+    }
+
     public function getDatatables(Request $request)
     {
         if(!$request->ajax()){
@@ -239,9 +271,7 @@ class ServicosController extends Controller
                             <div class="progress-bar '.$progressClass.'" role="progressbar" style="width: '.$percentual.'%" aria-valuenow="'.$percentual.'" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>'.$comp;
 
-                if($row->se_status == 'fechada'){
-                    $html = '<div class="fw-semibold text-secondary mb-1"><iclass="fa-regular fa-calendar text-muted me-1"></i> '.$row->se_data_renovacao->format('d/m/Y').'</div>';
-                }elseif($row->se_status == 'desligada'){
+                if($row->se_status == 'desligada'){
                     $html = '<div class="fw-semibold text-secondary mb-1"><iclass="fa-regular fa-calendar text-muted me-1"></i> Desligada</div>';
                 }
 
@@ -298,7 +328,8 @@ class ServicosController extends Controller
 
                 $btn = '<div class="d-flex align-items-center justify-content-end">';
 
-                $btn.= '<a href="'.route('dashboard.servicos.edit', $row->se_id).'" class="btn btn-icon btn-sm btn-light border text-primary" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Editar"><i class="fa-solid fa-pen"></i></a>';
+                $btn.= '<a href="javascript:;" data-senha="'.$row->se_senha_atual.'" data-status="'.$row->se_status.'" data-id="'.Str::toBase64($row->se_id).'" class="btn btn-icon btn-dark btn-sm ms-1 btnaltSenha" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Alterar Senha e atualizar"><i class="fas fa-key" aria-hidden="true"></i></a>';
+                $btn.= '<a href="'.route('dashboard.servicos.edit', $row->se_id).'" class="btn btn-icon btn-sm btn-light border text-primary ms-1" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Editar"><i class="fa-solid fa-pen"></i></a>';
                 $btn.= '<a href="javascript:;" data-id="'.Str::toBase64($row->se_id).'" class="btn btn-icon btn-danger btn-sm ms-1 btdelete" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Excluir permanentemente"><i class="fas fa-trash" aria-hidden="true"></i></a>';
                 $btn.= '</div>';
 

@@ -36,7 +36,7 @@ class Servicos extends Model
         'se_status',
         'se_tipo',
         'se_qtd_assinantes',
-        'se_ass_hoje',
+        'se_qtd_upate',
         'se_limite',
         'created_at',
         'updated_at'

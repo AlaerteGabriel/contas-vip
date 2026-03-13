@@ -66,6 +66,7 @@ Route::prefix('/')->group(function(){
             Route::post('/delete', 'ajaxDestroy')->name('dashboard.servicos.ajaxDestroy');
             Route::get('/get', 'getDatatables')->name('dashboard.servicos.getDatatables');
             Route::get('/serv-info','estatisticas')->name('dashboard.servicos.estatisticas');
+            Route::post('/alt-senha', 'altSenha')->name('dashboard.servicos.altSenha');
         });
 
         Route::prefix('/pedidos')->controller(PedidosController::class)->group(function(){

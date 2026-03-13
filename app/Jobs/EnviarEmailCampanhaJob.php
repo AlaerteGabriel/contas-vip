@@ -6,6 +6,7 @@ use App\Models\EmailMarketing;
 use App\Models\EmailMarketingLog;
 use App\Mail\SendEmail;
 use App\Models\Smtp;
+use App\Services\SmtpMailConfig;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -38,18 +39,8 @@ class EnviarEmailCampanhaJob implements ShouldQueue
             $assunto = str_replace('{nome}', $primeiroNome, $campanha->template->te_assunto);
             $mensagem = str_replace('{nome}', $primeiroNome, $campanha->template->te_modelo);
 
-            $smtp = Smtp::where('sm_padrao', 1)->inRandomOrder()->first();
-            if($smtp) {
-                // Aplica a configuração dentro do processo da fila
-                config([
-                    'mail.mailers.smtp.host' => $smtp->sm_host,
-                    'mail.mailers.smtp.port' => $smtp->sm_porta,
-                    'mail.mailers.smtp.username' => $smtp->sm_login,
-                    'mail.mailers.smtp.password' => $smtp->sm_senha,
-                    'mail.mailers.smtp.encryption' => $smtp->sm_protocolo,
-                    'mail.from.address' => $smtp->sm_email_remetente,
-                    'mail.from.name' => $smtp->sm_nome,
-                ]);
+            if (!SmtpMailConfig::apply()) {
+                return;
             }
 
             // Dispara o e-mail real

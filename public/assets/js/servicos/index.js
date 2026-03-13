@@ -180,4 +180,20 @@ $(document).ready(function () {
         dropdownParent: $('.modal-body'),
     });
 
+    $(document).on('click', '.btnaltSenha', function(e){
+
+        let id = $(this).attr('data-id');
+        let senha = $(this).attr('data-senha');
+        let status = $(this).attr('data-status');
+
+        $('#idSe').val(id);
+        $('#status').val(status).trigger('change');
+        $('#senha').val(senha);
+
+        // Instancia e abre a modal usando a API do BS5
+        const minhaModal = new bootstrap.Modal(document.getElementById('altsenhaModal'));
+        minhaModal.show();
+
+    });
+
 });

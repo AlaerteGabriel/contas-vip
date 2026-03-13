@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\Controller;
 use App\Jobs\EnviarEmailCompraJob;
+use App\Jobs\EnviarEmailRenovacaoJob;
 use App\Models\Clientes;
 use App\Models\Contas;
+use App\Models\Controle;
 use App\Models\Pedidos;
 use App\Services\AlocacaoServicoService;
 use Carbon\Carbon;
@@ -26,9 +27,9 @@ class WebHookController extends Controller
             'sku' => 'required|string',
         ]);
 
-        try{
+        DB::beginTransaction();
 
-            DB::beginTransaction();
+        try{
 
             //pegando o código do serviço e o período que vem no formato "XX030,"
             list($servico) = explode(',', $data['sku']);
@@ -78,7 +79,7 @@ class WebHookController extends Controller
             if(!$jaComprou){
 
                 $pedido = [
-                    'pe_servico' => null,
+                    'pe_servico' => $servConta->co_nome,
                     'pe_cliente_id' => $idCliente,
                     'pe_sku' => $servico,
                     'pe_detalhes' => $data['pedido'],
@@ -88,6 +89,7 @@ class WebHookController extends Controller
                     'pe_tipo_venda' => 'Nova compra',
                     'pe_data_pedido' => $dataInicio
                 ];
+
                 $idPedido = Pedidos::create($pedido);
 
             }else{
@@ -95,10 +97,11 @@ class WebHookController extends Controller
                 $pedido = Pedidos::where('pe_cliente_id', $idCliente)
                     ->where('pe_sku', $servico)
                     ->whereDate('pe_data_termino', '>=', now())
+                    ->orderBy('pe_id', 'desc')
                     ->first();
 
                 $dados = [
-                    'pe_servico' => null,
+                    'pe_servico' => $servConta->co_nome,
                     'pe_cliente_id' => $idCliente,
                     'pe_sku' => $servico,
                     'pe_detalhes' => $data['pedido'],
@@ -108,12 +111,15 @@ class WebHookController extends Controller
                     'pe_data_pedido' => $dataInicio
                 ];
 
+                $renovacao = false;
+
                 if($pedido){
                     $dataTermino = Carbon::parse($pedido->pe_data_termino)->addDays($periodo)->toDateString();
-
+                    $renovacao = true;
                     $dados['pe_tipo_venda'] = 'Renovação';
-                    //$dados['pe_data_inicio'] = $pedido->pe_data_termino;
                     $dados['pe_data_termino'] = $dataTermino;
+                    $dados['pe_data_inicio'] = $pedido->pe_data_inicio;
+                    $dados['pe_servico'] = $pedido->pe_servico;
                 }else{
                     $dados['pe_tipo_venda'] = 'Nova compra';
                 }
@@ -121,22 +127,35 @@ class WebHookController extends Controller
                 $idPedido = Pedidos::create($dados);
             }
 
-            $pivot = [
-                'cs_status' => 'ativo',
-                'cs_pedido_id' => $idPedido->pe_id,
-                'cs_template_email_id' => 0,
-                'cs_data_inicio' => $dataInicio,
-                'cs_data_termino' => $dataTermino
-            ];
+            if(!$renovacao) {
 
-            $servAlocado = $alocacaoServico->alocarNovoCliente($cliente, $servConta->co_id, $pivot);
-            $idPedido->pe_servico = $servAlocado->se_nome;
-            $idPedido->save();
+                $pivot = [
+                    'cs_status' => 'ativo',
+                    'cs_pedido_id' => $idPedido->pe_id,
+                    'cs_template_email_id' => 0,
+                    'cs_data_inicio' => $dataInicio,
+                    'cs_data_termino' => $dataTermino
+                ];
+
+                $servAlocado = $alocacaoServico->alocarNovoCliente($cliente, $servConta->co_id, $pivot);
+                $servAlocado = $servAlocado->se_id;
+
+            }else{
+                $controle = Controle::where('cs_pedido_id', $pedido->pe_id)->first();
+                $servAlocado = $controle->cs_servico_id;
+                $controle->cs_data_termino = $dataTermino;
+                $controle->cs_pedido_id = $idPedido->pe_id;
+                $controle->save();
+            }
 
             DB::commit();
 
             //Dispara o job para envio de email de nova compra
-            EnviarEmailCompraJob::dispatch($servAlocado->se_id, $idCliente, $vencimento)->afterCommit();
+            if(!$renovacao) {
+                EnviarEmailCompraJob::dispatch($servAlocado, $idCliente, $vencimento)->afterCommit();
+            }else{
+                EnviarEmailRenovacaoJob::dispatch($servAlocado, $idCliente, $vencimento)->afterCommit();
+            }
 
             return response()->json(['status' => 'sucesso'], 200);
 

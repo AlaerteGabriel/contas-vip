@@ -314,16 +314,14 @@ class ControleController extends Controller
                             <div class="progress-bar '.$progressClass.'" role="progressbar" style="width: '.$percentual.'%" aria-valuenow="'.$percentual.'" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>'.$comp;
 
-                if($row->servico->se_status == 'fechada'){
-                    $html = '<div class="fw-semibold text-secondary mb-1"><iclass="fa-regular fa-calendar text-muted me-1"></i> '.$row->cs_data_termino->format('d/m/Y').'</div>';
-                }elseif($row->servico->se_status == 'desligada'){
+                if($row->servico->se_status == 'desligada'){
                     $html = '<div class="fw-semibold text-secondary mb-1"><iclass="fa-regular fa-calendar text-muted me-1"></i> Desligada</div>';
                 }
 
                 return $html;
             })
             ->addColumn('qtd_update', function($row) {
-                return 0;
+                return $row->servico->se_qtd_update;
             })
             ->addColumn('status', function($row) {
                 //
@@ -352,26 +350,57 @@ class ControleController extends Controller
             })
             ->addColumn('acoes', function($row) {
 
+                $btn = '<div class="dropdown text-end">';
+                $btn.= '<button class="btn btn-sm btn-dark text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">';
+                $btn.= '<i class="fas fa-cog"></i>';
+                $btn.= '</button>';
+                $btn.= '<ul class="dropdown-menu dropdown-menu-end shadow">';
+                // --- Alterar Senha ---
+                $btn.= '<li><a href="javascript:;" data-status="'.$row->servico->se_status.'" data-senha="'.$row->servico->se_senha_atual.'" data-id="'.Str::toBase64($row->servico->se_id).'" class="dropdown-item btnaltSenha text-dark" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Alterar Senha e atualizar"><i class="fas fa-key me-2"></i> Alterar Senha</a></li>';
+
+                if(!$row->cliente->cl_banido) {
+                    // --- Banir Cliente ---
+                    $btn.= '<li><button data-id="' . $row->cs_id . '" data-id-cliente="' . $row->cliente->cl_id . '" class="dropdown-item text-danger btnBanirCliente" title="Bloquear Cliente e todos os serviços" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Banir Cliente de todos os serviços dele"><i class="fa-solid fa-user-large-slash me-2"></i> Banir Cliente</button></li>';
+                    if($row->cs_status == 'ativo') {
+                        $btn.= '<li><button data-id="' . $row->cs_id . '" class="dropdown-item btnEmailAdicional" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Registrar email adicional"><i class="fa-solid fa-envelope me-2"></i> E-mail Adicional</button></li>';
+                        $btn.= '<li><button data-id-cliente="' . $row->cliente->cl_id . '" data-cliente="' . $row->cliente->cl_nome . '" data-id="' . $row->cs_id . '" class="dropdown-item btnTrocarConta" title="Mudar de Conta" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Mudar de serviço"><i class="fa-solid fa-repeat me-2"></i> Mudar de Conta</button></li>';
+                        $btn.= '<li><button data-id="' . $row->cs_id . '" class="dropdown-item text-warning btnSuspender" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Suspender cliente neste Serviço"><i class="fa-solid fa-ban me-2"></i> Suspender</button></li>';
+                    } elseif($row->cs_status == 'suspenso') {
+                        $btn.= '<li><button data-id="'.$row->cs_id.'" class="dropdown-item text-success btnLiberar" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Desbanir cliente neste Serviço"><i class="fa-solid fa-chalkboard-user me-2"></i> Liberar</button></li>';
+                    }
+                } else {
+                    $btn.= '<li><button class="dropdown-item disabled"><i class="fa-solid fa-user-xmark me-2"></i> Cliente Banido</button></li>';
+                }
+                $btn.= '<li><hr class="dropdown-divider"></li>';
+                // --- Excluir ---
+                $btn.= '<li><button data-id="'.Str::toBase64($row->cs_id).'" class="dropdown-item text-danger btdelete" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Excluir cliente do serviço permanentemente"><i class="fas fa-trash me-2"></i> Excluir Cliente do serviço</button></li>';
+
+                $btn.= '</ul>';
+                $btn.= '</div>';
+                /*
                 $btn = '<div class="d-flex align-items-center justify-content-end">';
+
+                $btn.= '<a href="javascript:;" data-status="'.$row->servico->se_status.'" data-senha="'.$row->servico->se_senha_atual.'" data-id="'.Str::toBase64($row->servico->se_id).'" class="btn btn-icon btn-dark btn-sm ms-1 btnaltSenha" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Alterar Senha e atualizar"><i class="fas fa-key" aria-hidden="true"></i></a>';
 
                 if(!$row->cliente->cl_banido) {
 
-                    $btn.= '<button data-id="' . $row->cs_id . '" data-id-cliente="' . $row->cliente->cl_id . '" class="btn btn-sm btn-danger btnBanirCliente" title="Bloquear Cliente e todos os serviços" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Banir Cliente de todos os serviços dele"><i class="fa-solid fa-user-large-slash"></i></button>';
+                    $btn.= '<button data-id="' . $row->cs_id . '" data-id-cliente="' . $row->cliente->cl_id . '" class="btn btn-sm btn-danger ms-1 btnBanirCliente" title="Bloquear Cliente e todos os serviços" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Banir Cliente de todos os serviços dele"><i class="fa-solid fa-user-large-slash"></i></button>';
 
                     if($row->cs_status == 'ativo') {
                         $btn.= '<button data-id="' . $row->cs_id . '" class="btn btn-icon btn-info btn-sm ms-1 btnEmailAdicional" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Registrar email adicional"><i class="fa-solid fa-envelope"></i></button>';
-                        $btn .= '<button data-id-cliente="' . $row->cliente->cl_id . '" data-cliente="' . $row->cliente->cl_nome . '" data-id="' . $row->cs_id . '" class="btn btn-sm btn-light border text-dark ms-1 btnTrocarConta" title="Mudar de Conta" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Mudar de serviço"><i class="fa-solid fa-repeat"></i></button>';
+                        $btn.= '<button data-id-cliente="' . $row->cliente->cl_id . '" data-cliente="' . $row->cliente->cl_nome . '" data-id="' . $row->cs_id . '" class="btn btn-sm btn-light border text-dark ms-1 btnTrocarConta" title="Mudar de Conta" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Mudar de serviço"><i class="fa-solid fa-repeat"></i></button>';
                         $btn.= '<button data-id="' . $row->cs_id . '" class="btn btn-icon btn-warning btn-sm ms-1 btnSuspender" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Suspender cliente neste Serviço"><i class="fa-solid fa-ban"></i></button>';
                     }elseif($row->cs_status == 'suspenso'){
                         $btn.= '<button data-id="'.$row->cs_id.'" class="btn btn-icon btn-success btn-sm ms-1 btnLiberar" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Desbanir cliente neste Serviço"><i class="fa-solid fa-chalkboard-user"></i></button>';
                     }
                 }else{
-                    $btn.= '<button class="btn btn-sm btn-danger disabled"><i class="fa-solid fa-user-xmark"></i></button>';
+                    $btn.= '<button class="btn btn-sm btn-danger disabled ms-1"><i class="fa-solid fa-user-xmark"></i></button>';
                 }
 
-                $btn.= '<a href="javascript:;" data-id="'.Str::toBase64($row->cs_id).'" class="btn btn-icon btn-danger btn-sm ms-1 btdelete" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Excluir permanentemente"><i class="fas fa-trash" aria-hidden="true"></i></a>';
+                $btn.= '<a href="javascript:;" data-id="'.Str::toBase64($row->cs_id).'" class="btn btn-icon btn-danger btn-sm ms-1 btdelete" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="top" data-bs-original-title="Excluir cliente do serviço permanentemente"><i class="fas fa-trash" aria-hidden="true"></i></a>';
 
                 $btn.= '</div>';
+                */
 
                 return $btn;
             })

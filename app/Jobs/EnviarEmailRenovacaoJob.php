@@ -17,36 +17,49 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class EnviarEmailRealocacaoJob implements ShouldQueue
+class EnviarEmailRenovacaoJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     // Se falhar (ex: SMTP caiu), o Laravel tenta de novo até 3 vezes antes de dar erro definitivo
     public $tries = 3;
-    public $cliente;
-    public $novoServico;
 
-    public function __construct(Clientes $cliente, Servicos $novoServico)
+    public function __construct(private $idServico, private $idCliente, private $vencimento)
     {
-        $this->cliente = $cliente;
-        $this->novoServico = $novoServico;
     }
 
     public function handle(): void
     {
+
         $smtp = SmtpMailConfig::apply();
 
-        $modelo = TemplatesEmail::where('te_codigo', 'AS')->first();
+        $novoServico = Servicos::with('conta')->find($this->idServico);
+        $cliente = Clientes::find($this->idCliente);
 
-        $primeiroNome = trim($this->cliente->cl_nome);
-        $assunto = str_replace('{servico}', $this->novoServico->se_nome, $modelo->te_assunto);
-        $mensagem = str_replace('{servico}', $this->novoServico->se_nome, $modelo->te_modelo);
-        $mensagem = str_replace('{linkserver}', $this->novoServico->conta->co_url, $mensagem);
-        $mensagem = str_replace('{username}', $this->novoServico->se_username, $mensagem);
-        $mensagem = str_replace('{senhaatual}', $this->novoServico->se_senha_atual, $mensagem);
+        switch ($novoServico->conta->co_codigo) {
+            case 'XR':
+                $temp = 'RCPXR';
+            break;
+            default:
+                $temp = 'R';
+        }
+
+        $modelo = TemplatesEmail::where('te_codigo', $temp)->first();
+        if(!$modelo){
+            Log::error('template não localizado: '.$temp);
+            return;
+        }
+
+        $primeiroNome = trim($cliente->cl_nome);
+        $assunto = str_replace('{servico}', $novoServico->se_nome, $modelo->te_assunto);
+        $mensagem = str_replace('{servico}', $novoServico->se_nome, $modelo->te_modelo);
+        $mensagem = str_replace('{linkserver}', $novoServico->conta->co_url, $mensagem);
+        $mensagem = str_replace('{username}', $novoServico->se_username, $mensagem);
+        $mensagem = str_replace('{senhaatual}', $novoServico->se_senha_atual, $mensagem);
         $mensagem = str_replace('{nome}', $primeiroNome, $mensagem);
+        $mensagem = str_replace('{vencimento}', $this->vencimento, $mensagem);
 
-        $emailEnvio = $this->cliente->cl_email_envio ?? $this->cliente->cl_email;
+        $emailEnvio = $cliente->cl_email_envio ?? $cliente->cl_email;
 
         try {
             // 4. Dispara o Mailable

@@ -29,7 +29,7 @@ return new class extends Migration
             $table->date('se_data_update')->nullable()->index()->default(null);
             $table->unsignedInteger('se_qtd_assinantes');
             $table->unsignedInteger('se_limite')->nullable()->index()->default(null);
-            $table->enum('se_ass_hoje', ['Sim', 'Nao'])->index()->default('Nao');
+            $table->unsignedInteger('se_qtd_update')->default(0);
             $table->timestamps();
 
             $table->foreign('se_contas_id')->references('co_id')->on('cv_contas')->onDelete('cascade');

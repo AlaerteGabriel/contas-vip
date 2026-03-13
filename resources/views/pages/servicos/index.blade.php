@@ -98,7 +98,7 @@
                         <th>Email Vinc.</th>
                         <th>Username</th>
                         <th>Senha</th>
-                        <th>Prox Renovação</th>
+                        <th>Renovação</th>
                         <th>Tipo</th>
                         <th>Ult. AS</th>
                         <th>Qtd Ass.</th>
@@ -219,6 +219,61 @@
                         <div>
                             <button type="button" class="btn btn-light border me-2" data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-primary px-4 shadow-sm">Salvar Serviço</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal alterar senha -->
+<div class="modal fade" id="altsenhaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                <h1 class="modal-title fs-5 fw-bold"><i class="fa-solid fa-link text-primary me-2"></i>Alterar Senha/Atualizar</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form action="{{ route('dashboard.servicos.altSenha') }}" method="POST" name="add3" id="add3">
+                    @csrf
+                    <input type="hidden" name="se_id" id="idSe">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label small text-dark fw-medium mb-1">Senha Atual:</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-muted"><i class="fa-solid fa-key"></i></span>
+                                <input type="text" name="se_senha_atual" id="senha" class="form-control border-start-0" placeholder="senha" required>
+                            </div>
+                            <small class="text-muted">ATENÇÃO: Ao atualizar a senha, se o status da conta for "ativa" iniciará o processo de realocação de contas</small>
+                        </div>
+                    </div>
+
+                    <div class="card border border-warning border-opacity-25 bg-warning bg-opacity-10 shadow-none mb-4 mt-4">
+                        <div class="card-body p-3">
+                            <h6 class="fw-bold text-primary mb-3">Situação do serviço/conta</h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <select name="se_status" id="status" class="form-select form-control bg-light select2" required>
+                                        <option value="ativa">Ativo</option>
+                                        <option value="davez">Prioridade (Da Vez)</option>
+                                        <option value="fechada">Fechada</option>
+                                        <option value="desligada">Desligada</option>
+                                    </select>
+                                    <small class="text-muted">Se marcada como <code>Prioridade (Da Vez)</code> o sistema irá utilizar esse serviço independente de seu limite.</small><br>
+                                    <small class="text-muted">Se marcada como <code>Fechada</code> o sistema irá manter os clientes que nela estão, e não receberá novos clientes.</small><br>
+                                    <small class="text-muted">Se marcada como <code>Desligada</code> o sistema irá realocar todos os clientes a um serviço equivalente, e não será mais utilizada.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-top-0 pt-4 px-4 pb-2 d-flex justify-content-end">
+                        <div>
+                            <button type="button" class="btn btn-light border me-2" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary px-4 shadow-sm">Alterar e atualizar</button>
                         </div>
                     </div>
                 </form>

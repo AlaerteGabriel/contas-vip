@@ -6,6 +6,7 @@ use App\Mail\SendEmail;
 use App\Models\Controle;
 use App\Models\Smtp;
 use App\Models\TemplatesEmail;
+use App\Services\SmtpMailConfig;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -33,26 +34,9 @@ class VerificaAssinaturaCliente extends Command
     public function handle()
     {
 
-        // 1. Seleciona o SMTP. Pode usar uma lógica para pegar o mais vazio,
-        // ou um específico da conta. Aqui pego o primeiro ativo como exemplo.
-        $smtp = Smtp::where('sm_padrao', 1)->inRandomOrder()->first();
-        if (!$smtp) {
-            Log::error('Nenhum servidor SMTP configurado ou ativo na tabela cv_smtp.');
+        if (!SmtpMailConfig::apply()) {
             return;
         }
-
-        // 2. Injeta as configurações dinâmicas no Laravel
-        config([
-            'mail.mailers.smtp.host' => $smtp->sm_host,
-            'mail.mailers.smtp.port' => $smtp->sm_porta,
-            'mail.mailers.smtp.username' => $smtp->sm_login,
-            'mail.mailers.smtp.password' => $smtp->sm_senha,
-            'mail.mailers.smtp.encryption' => $smtp->sm_protocolo,
-            'mail.from.address' => $smtp->sm_email_remetente,
-            'mail.from.name' => $smtp->sm_nome,
-        ]);
-
-        Mail::purge('smtp');
 
         //
         $controles = Controle::with(['cliente', 'servico','templateEmail'])
@@ -77,6 +61,10 @@ class VerificaAssinaturaCliente extends Command
         }
 
         foreach ($controles AS $controle) {
+
+            if(!$controle->cs_data_termino){
+                continue;
+            }
 
             $hoje = Carbon::today();
             $renovacao = Carbon::parse($controle->cs_data_termino)->startOfDay();
