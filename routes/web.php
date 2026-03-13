@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\WebHookController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ConfiguracoesController;
 use App\Http\Controllers\ContasController;
@@ -17,6 +18,11 @@ use Illuminate\Support\Facades\Route;
 use Spatie\Honeypot\ProtectAgainstSpam;
 
 Route::prefix('/')->group(function(){
+
+    Route::prefix('suporte')->controller(WebHookController::class)->group(function(){
+        Route::get('', 'alterarConta')->name('suporte.index');
+        Route::post('/alt-conta','alterarContaStore')->middleware(ProtectAgainstSpam::class)->name('suporte.altConta');
+    });
 
     //Redirecionamos o acesso principal para a rota de login.
     Route::redirect('', '/login')->name('admin.login');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Jobs\EnviarEmailCompraJob;
+use App\Jobs\EnviarEmailRealocacaoJob;
 use App\Jobs\EnviarEmailRenovacaoJob;
 use App\Models\Clientes;
 use App\Models\Contas;
@@ -168,5 +169,61 @@ class WebHookController extends Controller
             return response()->json(['status' => 'pedido nao encontrado'.' | '.$e->getMessage()], 404);
         }
 
+    }
+
+    public function alterarConta(Request $request, AlocacaoServicoService $alocacaoServico)
+    {
+        return view('suporte/index');
+    }
+
+    public function alterarContaStore(Request $request, AlocacaoServicoService $alocacaoServico)
+    {
+        // Exemplo de validação básica
+        $data = $request->validate([
+            'email' => 'required|email',
+            'conta' => 'required|string|max:2',
+        ]);
+
+        DB::beginTransaction();
+
+        try{
+
+            //pegando a conta de serviço com menor número de assinantes e ativa.
+            $servConta = Contas::with('servicos')->where('co_codigo', $data['conta'])->first();
+            //se não tiver o sistema retorna falso.
+            if(!$servConta){
+                return back()->with('error', 'Conta do Serviço não existe')->withInput();
+            }elseif($servConta->servicos->isEmpty()){
+                return back()->with('error', 'Serviço não existe')->withInput();
+            }
+
+            $cliente = Clientes::where('cl_email', $data['email'])->first();
+            if(!$cliente){
+                return back()->with('error', 'Cliente não encontrado')->withInput();
+            }
+
+            $controle = Controle::with(['servico' => function($query) use ($servConta) {
+                $query->where('se_contas_id', $servConta->co_id);
+            }])->where('cs_cliente_id', $cliente->cl_id)->first();
+
+            $novoServ = $alocacaoServico->buscarMelhorServico($servConta->co_id);
+            $controle->cs_servico_id = $novoServ->se_id;
+            $controle->save();
+
+            DB::commit();
+
+            // Dispara o e-mail pro cliente com a nova senha e o serviço que ele caiu
+            EnviarEmailRealocacaoJob::dispatch($cliente, $novoServ)->afterCommit();
+
+            return back()->with('success', $this->msgSuccess);
+
+        }catch (\Exception $e){
+            // Salvar log
+            Log::error('Falha ao mudar conta do cliente via link suporte', ['error' => $e->getMessage()]);
+            // Operação não é concluída com êxito
+            DB::rollBack();
+
+            return back()->with('error', $this->msgError.$e->getMessage())->withInput();
+        }
     }
 }
