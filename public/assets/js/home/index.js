@@ -66,6 +66,10 @@ $(document).ready(function () {
         },
         ajax: {
             url: ROUTE_DATATABLES,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': TOKEN
+            },
             global:false,
         },
         columns: [

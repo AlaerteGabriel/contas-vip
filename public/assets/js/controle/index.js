@@ -41,6 +41,10 @@ $(document).ready(function () {
         ajax: {
             url: ROUTE_DATATABLES,
             global:false,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': TOKEN
+            },
             // Adiciona os dados dos filtros à requisição AJAX
             data: function (d) {
                 d.busca = $('#busca').val();

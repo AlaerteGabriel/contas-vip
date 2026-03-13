@@ -21,7 +21,7 @@ class EmailMarketingController extends Controller
     public function index()
     {
         // Carrega os dados para popular os selects do seu layout Blade
-        $servicos = Servicos::orderBy('se_nome')->get();
+        $servicos = Servicos::where('se_status', 'ativa')->orderBy('se_nome')->get();
         $templates = TemplatesEmail::orderBy('te_assunto')->get();
 
         // Traz as campanhas com a relação do template e já conta quantos logs têm status 'enviado'

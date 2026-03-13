@@ -30,6 +30,12 @@ iziToast.settings({
     }
 });
 
+// $.ajaxSetup({
+//     headers: {
+//         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//     }
+// });
+
 /**
  * Função utilitária de Debounce.
  * @param {function} func - A função a ser executada.

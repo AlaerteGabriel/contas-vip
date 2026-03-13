@@ -40,7 +40,7 @@ Route::prefix('/')->group(function(){
         Route::get('', [DashboardController::class, 'index'])->name('dashboard.index');
 
         Route::get('/dash-info', [DashboardController::class, 'estatisticas'])->name('dashboard.estatisticas');
-        Route::get('/ultimos', [DashboardController::class, 'getDatatables'])->name('dashboard.ultimos.getDatatables');
+        Route::post('/ultimos', [DashboardController::class, 'getDatatables'])->name('dashboard.ultimos.getDatatables');
 
         Route::prefix('/perfil')->controller(PerfilController::class)->group(function(){
             Route::get('/', 'index')->name('dashboard.perfil.index');
@@ -54,7 +54,7 @@ Route::prefix('/')->group(function(){
             Route::get('/edit/{id}', 'edit')->name('dashboard.clientes.edit');
             Route::post('/add', 'store')->name('dashboard.clientes.store');
             Route::post('/delete', 'ajaxDestroy')->name('dashboard.clientes.ajaxDestroy');
-            Route::get('/get', 'getDatatables')->name('dashboard.clientes.getDatatables');
+            Route::post('/list', 'getDatatables')->name('dashboard.clientes.getDatatables');
         });
 
         Route::prefix('/servicos')->controller(ServicosController::class)->group(function(){
@@ -64,14 +64,14 @@ Route::prefix('/')->group(function(){
             Route::post('/store', 'store')->name('dashboard.servicos.store');
             Route::post('/update', 'update')->name('dashboard.servicos.update');
             Route::post('/delete', 'ajaxDestroy')->name('dashboard.servicos.ajaxDestroy');
-            Route::get('/get', 'getDatatables')->name('dashboard.servicos.getDatatables');
+            Route::post('/list', 'getDatatables')->name('dashboard.servicos.getDatatables');
             Route::get('/serv-info','estatisticas')->name('dashboard.servicos.estatisticas');
             Route::post('/alt-senha', 'altSenha')->name('dashboard.servicos.altSenha');
         });
 
         Route::prefix('/pedidos')->controller(PedidosController::class)->group(function(){
             Route::get('/', 'index')->name('dashboard.pedidos.index');
-            Route::get('/get', 'getDatatables')->name('dashboard.pedidos.getDatatables');
+            Route::post('/list', 'getDatatables')->name('dashboard.pedidos.getDatatables');
         });
 
         Route::prefix('/config')->controller(ConfiguracoesController::class)->group(function(){
@@ -84,7 +84,7 @@ Route::prefix('/')->group(function(){
             Route::get('/mail-server', 'smtp')->name('dashboard.config.mail-server');
             Route::post('/mail-server', 'smtpStore')->name('dashboard.config.mail-server.store');
             Route::post('/delete', 'ajaxDestroy')->name('dashboard.smtp.ajaxDestroy');
-            Route::get('/get-smtp', 'getDatatablesSmtp')->name('dashboard.smtp.getDatatablesSmtp');
+            Route::post('/list-smtp', 'getDatatablesSmtp')->name('dashboard.smtp.getDatatablesSmtp');
             Route::get('/smtp-edit', 'ajaxSmtpEdit')->name('dashboard.smtp.ajaxSmtpEdit');
         });
 
@@ -92,7 +92,7 @@ Route::prefix('/')->group(function(){
             Route::get('/', 'index')->name('dashboard.config.email-templates');
             Route::post('/store', 'store')->name('dashboard.config.email-templates.store');
             Route::post('/delete', 'ajaxDestroy')->name('dashboard.config.email-templates.ajaxDestroy');
-            Route::get('/get-templates', 'getDatatablesEmailTemplates')->name('dashboard.config.email-templates.getDatatablesEmailTemplates');
+            Route::post('/list-templates', 'getDatatablesEmailTemplates')->name('dashboard.config.email-templates.getDatatablesEmailTemplates');
             Route::get('/edit', 'ajaxEdit')->name('dashboard.config.email-templates.ajaxEdit');
         });
 
@@ -106,13 +106,13 @@ Route::prefix('/')->group(function(){
             Route::get('/create', 'create')->name('dashboard.contas.create');
             Route::post('/store', 'store')->name('dashboard.contas.store');
             Route::post('/delete', 'ajaxDestroy')->name('dashboard.contas.ajaxDestroy');
-            Route::get('/get', 'getDatatables')->name('dashboard.contas.getDatatables');
+            Route::post('/list', 'getDatatables')->name('dashboard.contas.getDatatables');
             Route::get('/edit', 'ajaxEdit')->name('dashboard.contas.ajaxEdit');
         });
 
         Route::prefix('/controle')->controller(ControleController::class)->group(function(){
             Route::get('/', 'index')->name('dashboard.controle.index');
-            Route::get('/get', 'getDatatables')->name('dashboard.controle.getDatatables');
+            Route::post('/list', 'getDatatables')->name('dashboard.controle.getDatatables');
             Route::post('/trocar-conta', 'trocarConta')->name('dashboard.controle.trocarConta');
             Route::post('/banir-cliente', 'ajaxBanCliente')->name('dashboard.controle.ajaxBanCliente');
             Route::post('/banir-cliente-servico', 'ajaxBanClienteServico')->name('dashboard.controle.ajaxBanClienteServico');
